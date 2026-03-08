@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="משחקים דיגיטליים לגיל הרך — אנה גלפר. משחקים אינטראקטיביים ומהנים ללמידה בגיל 3–6." />
+  <title>משחקים דיגיטליים — אנה גלפר</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="games" data-page-type="משחק דיגיטלי">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container hdr-inner">
+      <a href="index.html" class="hdr-brand-link">
+        <img src="logo.png" alt="אנה גלפר" class="hdr-logo" />
+      </a>
+      <nav class="hdr-nav" aria-label="ניווט ראשי">
+        <a href="index.html"         class="nav-link">בית</a>
+        <a href="games.html"         class="nav-link active">🎮 משחקים</a>
+        <a href="activities.html"    class="nav-link">📋 פעילויות</a>
+        <a href="units.html"         class="nav-link">📚 יחידות</a>
+        <a href="presentations.html" class="nav-link">📊 מצגות</a>
+        <a href="about.html"         class="nav-link">אודות</a>
+      </nav>
+      <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
+      <a href="index.html"         class="mobile-link">🏠 בית</a>
+      <a href="games.html"         class="mobile-link">🎮 משחקים דיגיטליים</a>
+      <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
+      <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
+      <a href="presentations.html" class="mobile-link">📊 מצגות הדרכה</a>
+      <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ═══════════════ PAGE BANNER ═══════════════ -->
+    <div class="page-banner" role="banner" aria-label="כותרת דף">
+      <div class="page-banner-inner container">
+        <span class="page-banner-icon" aria-hidden="true">🎮</span>
+        <h1>משחקים דיגיטליים</h1>
+        <p>משחקים אינטראקטיביים ומהנים לגיל הרך — ללמוד תוך כדי משחק</p>
+      </div>
+      <div class="page-banner-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,30 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#F9F6EF"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ═══════════════ CONTENT SECTION ═══════════════ -->
+    <section class="content-section" aria-label="תכנים">
+      <div class="container">
+
+        <!-- Filter area -->
+        <div class="filter-area" role="search" aria-label="חיפוש וסינון תכנים">
+
+          <!-- Search -->
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="חפשו משחק..."
+              aria-label="חיפוש משחק"
+              autocomplete="off"
+            />
+            <button id="searchClear" aria-label="נקה חיפוש" title="נקה">✕</button>
+          </div>
+
+          <!-- Topic pills -->
+          <div class="topic-pills-wrap" id="topicFilters" role="group" aria-label="סינון לפי נושא">
+            <button class="tpill active" data-topic="all"        aria-pressed="true">✨ הכל</button>
+            <button class="tpill"        data-topic="חגים"       aria-pressed="false">🕎 חגים</button>
+            <button class="tpill"        data-topic="עונות השנה" aria-pressed="false">🍂 עונות השנה</button>
+            <button class="tpill"        data-topic="צבעים"      aria-pressed="false">🌈 צבעים</button>
+            <button class="tpill"        data-topic="מספרים"     aria-pressed="false">🔢 מספרים</button>
+            <button class="tpill"        data-topic="אותיות"     aria-pressed="false">🔤 אותיות</button>
+            <button class="tpill"        data-topic="רגשות"      aria-pressed="false">😊 רגשות</button>
+            <button class="tpill"        data-topic="חיות"       aria-pressed="false">🐾 חיות</button>
+            <button class="tpill"        data-topic="צורות"      aria-pressed="false">🔷 צורות</button>
+          </div>
+
+          <!-- Age + clear -->
+          <div class="filter-row">
+            <span class="filter-row-label">גיל:</span>
+            <div class="pills" id="ageFilters" role="group" aria-label="סינון לפי גיל">
+              <button class="pill active" data-age="all" aria-pressed="true">הכל</button>
+              <button class="pill"        data-age="3-4" aria-pressed="false">גיל 3–4</button>
+              <button class="pill"        data-age="4-5" aria-pressed="false">גיל 4–5</button>
+              <button class="pill"        data-age="5-6" aria-pressed="false">גיל 5–6</button>
+            </div>
+            <button class="btn-clear" onclick="clearFilters()" aria-label="נקה את כל הסינונים">✕ נקה סינון</button>
+          </div>
+
+        </div>
+
+        <!-- Results count -->
+        <div id="resultsCount" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Cards grid -->
+        <div id="cardsGrid" role="list" aria-label="משחקים דיגיטליים"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="site-footer">
+    <div class="ftr-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,0 1080,60 1440,20 L1440,0 L0,0 Z" fill="#F2EDE2"/>
+      </svg>
+    </div>
+    <div class="container ftr-inner">
+      <div class="ftr-brand">
+        <img src="logo.png" alt="אנה גלפר" class="ftr-logo" />
+        <p>מרחב למידה דיגיטלי לגיל הרך<br />לגננות, הורים וילדים בגיל 3–6</p>
+      </div>
+      <nav class="ftr-nav" aria-label="ניווט תחתון">
+        <a href="index.html">בית</a>
+        <a href="games.html">משחקים</a>
+        <a href="activities.html">פעילויות</a>
+        <a href="units.html">יחידות</a>
+        <a href="presentations.html">מצגות</a>
+        <a href="about.html">אודות</a>
+      </nav>
+    </div>
+    <div class="container ftr-copy">
+      <p>© 2026 אנה גלפר — כל הזכויות שמורות 🦋</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

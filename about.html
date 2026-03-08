@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="אנה גלפר — גננת ומחנכת לגיל הרך. קצת עליי, על הדרך שלי וצור קשר." />
+  <title>אודות אנה גלפר — מרחב הלמידה</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="about">
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container hdr-inner">
+      <a href="index.html" class="hdr-brand-link">
+        <img src="logo.png" alt="אנה גלפר" class="hdr-logo" />
+      </a>
+      <nav class="hdr-nav" aria-label="ניווט ראשי">
+        <a href="index.html"         class="nav-link">בית</a>
+        <a href="games.html"         class="nav-link">🎮 משחקים</a>
+        <a href="activities.html"    class="nav-link">📋 פעילויות</a>
+        <a href="units.html"         class="nav-link">📚 יחידות</a>
+        <a href="presentations.html" class="nav-link">📊 מצגות</a>
+        <a href="about.html"         class="nav-link active">אודות</a>
+      </nav>
+      <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
+      <a href="index.html"         class="mobile-link">🏠 בית</a>
+      <a href="games.html"         class="mobile-link">🎮 משחקים דיגיטליים</a>
+      <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
+      <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
+      <a href="presentations.html" class="mobile-link">📊 מצגות הדרכה</a>
+      <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ═══════════════ PAGE BANNER ═══════════════ -->
+    <section class="page-banner" aria-label="אודות">
+      <div class="page-banner-inner container">
+        <span class="page-banner-icon" aria-hidden="true">👩‍🏫</span>
+        <h1>אנה גלפר</h1>
+        <p>גננת ומחנכת לגיל הרך — יוצרת חומרים פדגוגיים לגיל 3–6</p>
+      </div>
+      <div class="page-banner-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,20 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#F9F6EF"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ═══════════════ ABOUT ═══════════════ -->
+    <section class="about-section" aria-label="קצת עליי">
+      <div class="container">
+        <div class="about-inner reveal">
+
+          <!-- Visual column -->
+          <aside class="about-visual">
+            <div class="about-avatar" aria-hidden="true">👩‍🏫</div>
+            <div class="about-tags" role="list">
+              <span class="about-tag" role="listitem">👶 גיל הרך 3–6</span>
+              <span class="about-tag" role="listitem">🎓 גננת מוסמכת</span>
+              <span class="about-tag" role="listitem">💡 למידה דיגיטלית</span>
+              <span class="about-tag" role="listitem">🌱 חינוך מיוחד</span>
+            </div>
+          </aside>
+
+          <!-- Text column -->
+          <div class="about-text">
+            <h2>שלום, אני אנה גלפר</h2>
+
+            <blockquote class="about-quote">
+              <p>"למידה בגיל הרך חייבת להיות שמחה, משמעותית ומותאמת לעולמו של הילד — ולא רק להישגים."</p>
+            </blockquote>
+
+            <p>
+              אני גננת ומחנכת מנוסה בחינוך לגיל הרך. לאורך שנות הקריירה שלי עבדתי עם ילדים בגילאי 3–6 ופיתחתי שיטות הוראה ייחודיות המשלבות משחק, יצירה ולמידה משמעותית.
+            </p>
+
+            <p>
+              מרחב הלמידה הדיגיטלי הזה נולד מתוך הרצון לשתף את הכלים שיצרתי עם גננות, הורים ואנשי חינוך בכל הארץ. כאן תמצאו משחקים, מערכי פעילות, יחידות תוכן ומצגות — כולם פותחו בהתאם לתוכנית הלאומית ולמאפייני ההתפתחות של הגיל.
+            </p>
+
+            <p>
+              אני מאמינה שכל ילד יכול לאהוב ללמוד — כשהלמידה מותאמת לו, מהנה ומאפשרת לו לחקור בקצב שלו. זה מה שמניע אותי לייצר כל יום תכנים חדשים ולשתף אותם בחינם.
+            </p>
+
+            <button class="btn-scroll-contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+              צרו איתי קשר ✉
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ CONTACT ═══════════════ -->
+    <section class="contact-section" id="contact" aria-label="צור קשר">
+      <div class="contact-inner container">
+        <h2>צרו קשר</h2>
+
+        <form class="contact-form" onsubmit="handleSubmit(event)" novalidate aria-label="טופס יצירת קשר">
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="contactName">שם מלא</label>
+              <input
+                type="text"
+                id="contactName"
+                name="name"
+                placeholder="השם שלך"
+                required
+                autocomplete="name"
+              />
+            </div>
+            <div class="form-field">
+              <label for="contactEmail">דוא"ל</label>
+              <input
+                type="email"
+                id="contactEmail"
+                name="email"
+                placeholder="your@email.com"
+                required
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="contactSubject">נושא</label>
+            <select id="contactSubject" name="subject">
+              <option value="" disabled selected>בחרו נושא...</option>
+              <option value="general">שאלה כללית</option>
+              <option value="collab">הצעה לשיתוף פעולה</option>
+              <option value="content">בקשה לתוכן חדש</option>
+              <option value="feedback">משוב על חומרים</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="contactMessage">הודעה</label>
+            <textarea
+              id="contactMessage"
+              name="message"
+              rows="5"
+              placeholder="כתבו כאן את ההודעה שלכם..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" id="submitBtn">שלחו הודעה ✉</button>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="site-footer">
+    <div class="ftr-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,0 1080,60 1440,20 L1440,0 L0,0 Z" fill="#F2EDE2"/>
+      </svg>
+    </div>
+    <div class="container ftr-inner">
+      <div class="ftr-brand">
+        <img src="logo.png" alt="אנה גלפר" class="ftr-logo" />
+        <p>מרחב למידה דיגיטלי לגיל הרך<br />לגננות, הורים וילדים בגיל 3–6</p>
+      </div>
+      <nav class="ftr-nav" aria-label="ניווט תחתון">
+        <a href="index.html">בית</a>
+        <a href="games.html">משחקים</a>
+        <a href="activities.html">פעילויות</a>
+        <a href="units.html">יחידות</a>
+        <a href="presentations.html">מצגות</a>
+        <a href="about.html">אודות</a>
+      </nav>
+    </div>
+    <div class="container ftr-copy">
+      <p>© 2026 אנה גלפר — כל הזכויות שמורות 🦋</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

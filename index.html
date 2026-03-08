@@ -3,342 +3,201 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>אנה גלפר — מרחב למידה דיגיטלי לגיל הרך</title>
-  <meta name="description" content="משחקים דיגיטליים, מערכי פעילות, יחידות תוכן ומצגות הדרכה לגננות ולהורים — לגיל 3–6." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <meta name="description" content="מרחב הלמידה של אנה גלפר — משחקים דיגיטליים, מערכי פעילות, יחידות תוכן ומצגות לגיל הרך 3–6" />
+  <title>אנה גלפר — מרחב הלמידה</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body data-page="home">
 
-  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <!-- ═══════════════ HEADER ═══════════════ -->
   <header class="site-header" id="siteHeader">
     <div class="container hdr-inner">
-      <a href="#" class="hdr-brand-link">
-        <img src="logo.png" alt="אנה גלפר — מרחב למידה" class="hdr-logo" />
+      <a href="index.html" class="hdr-brand-link">
+        <img src="logo.png" alt="אנה גלפר" class="hdr-logo" />
       </a>
-
       <nav class="hdr-nav" aria-label="ניווט ראשי">
-        <a href="#library">ספרייה</a>
-        <a href="#topics">נושאים</a>
-        <a href="#about">עליי</a>
-        <a href="#contact">צור קשר</a>
+        <a href="index.html"         class="nav-link active">בית</a>
+        <a href="games.html"         class="nav-link">🎮 משחקים</a>
+        <a href="activities.html"    class="nav-link">📋 פעילויות</a>
+        <a href="units.html"         class="nav-link">📚 יחידות</a>
+        <a href="presentations.html" class="nav-link">📊 מצגות</a>
+        <a href="about.html"         class="nav-link">אודות</a>
       </nav>
-
       <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
-
     <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
-      <a href="#library" class="mobile-link">ספרייה</a>
-      <a href="#topics" class="mobile-link">נושאים</a>
-      <a href="#about" class="mobile-link">עליי</a>
-      <a href="#contact" class="mobile-link">צור קשר</a>
+      <a href="index.html"         class="mobile-link">🏠 בית</a>
+      <a href="games.html"         class="mobile-link">🎮 משחקים דיגיטליים</a>
+      <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
+      <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
+      <a href="presentations.html" class="mobile-link">📊 מצגות הדרכה</a>
+      <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
     </div>
   </header>
 
-  <!-- ═══════════════════════════ HERO ════════════════════════════ -->
-  <section class="hero">
-    <div class="hero-deco" aria-hidden="true">
-      <div class="blob b1"></div>
-      <div class="blob b2"></div>
-      <div class="blob b3"></div>
-    </div>
+  <main>
 
-    <div class="container hero-body">
-
-      <div class="hero-logo-wrap reveal">
-        <img src="logo.png" alt="לוגו אנה גלפר" class="hero-logo" />
-        <span class="butterfly bf-1" aria-hidden="true">🦋</span>
-        <span class="butterfly bf-2" aria-hidden="true">🦋</span>
-        <span class="butterfly bf-3" aria-hidden="true">🦋</span>
-        <span class="butterfly bf-4" aria-hidden="true">🦋</span>
-        <span class="butterfly bf-5" aria-hidden="true">🦋</span>
-        <span class="butterfly bf-6" aria-hidden="true">🦋</span>
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <section class="hero" aria-label="כותרת ראשית">
+      <!-- Decorative background -->
+      <div class="hero-deco" aria-hidden="true">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
       </div>
 
-      <h1 class="hero-h1 reveal delay-1">מרחב למידה דיגיטלי לגיל הרך של אנה גלפר</h1>
+      <!-- Butterflies -->
+      <span class="butterfly bf-1" aria-hidden="true">🦋</span>
+      <span class="butterfly bf-2" aria-hidden="true">🦋</span>
+      <span class="butterfly bf-3" aria-hidden="true">🦋</span>
+      <span class="butterfly bf-4" aria-hidden="true">🦋</span>
+      <span class="butterfly bf-5" aria-hidden="true">🦋</span>
+      <span class="butterfly bf-6" aria-hidden="true">🦋</span>
 
-      <p class="hero-p reveal delay-2">משחקים דיגיטליים, מערכי פעילות, יחידות תוכן ומצגות הדרכה לגננות ולהורים.</p>
-
-      <div class="hero-btns reveal delay-3">
-        <a href="#library" class="btn btn-primary">כניסה לתכנים</a>
-        <a href="#about" class="btn btn-outline">קצת עליי</a>
-      </div>
-
-      <div class="hero-stats reveal delay-4">
-        <div class="hstat">
-          <span class="hstat-num">4</span>
-          <span class="hstat-lbl">סוגי תוכן</span>
-        </div>
-        <div class="hstat-sep" aria-hidden="true"></div>
-        <div class="hstat">
-          <span class="hstat-num">8+</span>
-          <span class="hstat-lbl">נושאי למידה</span>
-        </div>
-        <div class="hstat-sep" aria-hidden="true"></div>
-        <div class="hstat">
-          <span class="hstat-num">3–6</span>
-          <span class="hstat-lbl">גיל</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ════════════════════════ TYPES SECTION ════════════════════════ -->
-  <section class="types-section" id="types">
-    <div class="container">
-      <div class="sec-head reveal">
-        <h2>סוגי התכנים</h2>
-        <p>בחרו את סוג התוכן שמתאים לכם ועיינו בכל החומרים הזמינים</p>
-      </div>
-
-      <div class="types-grid">
-
-        <div class="type-card tc-games reveal" onclick="filterAndGo('משחק דיגיטלי')" tabindex="0" role="button" aria-label="סנן לפי משחקים דיגיטליים">
-          <div class="tc-icon">🎮</div>
-          <h3>משחקים דיגיטליים</h3>
-          <p>משחקים אינטראקטיביים מהנים שפותחו במיוחד לגיל הרך, לחיזוק מיומנויות קוגניטיביות.</p>
-          <span class="tc-link">גלו את המשחקים ←</span>
+      <!-- Hero content -->
+      <div class="hero-body">
+        <div class="hero-logo-wrap reveal">
+          <img src="logo.png" alt="אנה גלפר" class="hero-logo" />
         </div>
 
-        <div class="type-card tc-plans reveal delay-1" onclick="filterAndGo('מערך פעילות')" tabindex="0" role="button" aria-label="סנן לפי מערכי פעילות">
-          <div class="tc-icon">📋</div>
-          <h3>מערכי פעילות</h3>
-          <p>תוכניות פעילות מובנות לגננת, עם מטרות, חומרים ושלבי ביצוע ברורים.</p>
-          <span class="tc-link">גלו את המערכים ←</span>
-        </div>
+        <span class="hero-eyebrow reveal delay-1">גננת מנוסה • חינוך לגיל הרך</span>
 
-        <div class="type-card tc-units reveal delay-2" onclick="filterAndGo('יחידת תוכן')" tabindex="0" role="button" aria-label="סנן לפי יחידות תוכן">
-          <div class="tc-icon">📚</div>
-          <h3>יחידות תוכן</h3>
-          <p>יחידות לימוד מקיפות הכוללות פעילויות, חומרים ומשאבים על נושא מסוים.</p>
-          <span class="tc-link">גלו את היחידות ←</span>
-        </div>
+        <h1 class="hero-h1 reveal delay-2">
+          <span class="hero-h1-line">מרחב הלמידה</span>
+          <span class="hero-h1-accent">של אנה גלפר</span>
+        </h1>
 
-        <div class="type-card tc-pres reveal delay-3" onclick="filterAndGo('מצגת הדרכה')" tabindex="0" role="button" aria-label="סנן לפי מצגות הדרכה">
-          <div class="tc-icon">📊</div>
-          <h3>מצגות הדרכה</h3>
-          <p>מצגות מקצועיות לגננות ולהורים, להנחיה, הדרכה ולשיתוף ידע מקצועי.</p>
-          <span class="tc-link">גלו את המצגות ←</span>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════ TOPICS SECTION ════════════════════════ -->
-  <section class="topics-section" id="topics">
-    <div class="container">
-      <div class="sec-head reveal">
-        <h2>נושאי הלמידה</h2>
-        <p>בחרו נושא כדי לסנן את התכנים בספרייה</p>
-      </div>
-
-      <div class="topics-grid reveal delay-1">
-
-        <button class="topic-btn active" data-topic="all" aria-pressed="true">
-          <span role="img" aria-label="כל הנושאים">✨</span>
-          <span>הכל</span>
-        </button>
-
-        <button class="topic-btn" data-topic="חגים" aria-pressed="false">
-          <span role="img" aria-label="חגים">🕎</span>
-          <span>חגים</span>
-        </button>
-
-        <button class="topic-btn" data-topic="עונות השנה" aria-pressed="false">
-          <span role="img" aria-label="עונות השנה">🍂</span>
-          <span>עונות השנה</span>
-        </button>
-
-        <button class="topic-btn" data-topic="צבעים" aria-pressed="false">
-          <span role="img" aria-label="צבעים">🌈</span>
-          <span>צבעים</span>
-        </button>
-
-        <button class="topic-btn" data-topic="מספרים" aria-pressed="false">
-          <span role="img" aria-label="מספרים">🔢</span>
-          <span>מספרים</span>
-        </button>
-
-        <button class="topic-btn" data-topic="אותיות" aria-pressed="false">
-          <span role="img" aria-label="אותיות">🔤</span>
-          <span>אותיות</span>
-        </button>
-
-        <button class="topic-btn" data-topic="רגשות" aria-pressed="false">
-          <span role="img" aria-label="רגשות">😊</span>
-          <span>רגשות</span>
-        </button>
-
-        <button class="topic-btn" data-topic="חיות" aria-pressed="false">
-          <span role="img" aria-label="חיות">🐾</span>
-          <span>חיות</span>
-        </button>
-
-        <button class="topic-btn" data-topic="צורות" aria-pressed="false">
-          <span role="img" aria-label="צורות">🔷</span>
-          <span>צורות</span>
-        </button>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════ LIBRARY SECTION ════════════════════════ -->
-  <section class="library-section" id="library">
-    <div class="container">
-      <div class="sec-head reveal">
-        <h2>ספריית התכנים</h2>
-        <p>כל החומרים הדיגיטליים במקום אחד — חפשו, סננו ובחרו</p>
-      </div>
-
-      <!-- Search -->
-      <div class="search-wrap reveal">
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="חפשו לפי שם או תיאור..."
-          aria-label="חיפוש תכנים"
-          autocomplete="off"
-        />
-        <button class="search-clear" id="searchClear" title="נקה חיפוש" aria-label="נקה חיפוש">✕</button>
-      </div>
-
-      <!-- Filters -->
-      <div class="filter-bar reveal">
-
-        <div class="filter-group">
-          <label>סוג תוכן</label>
-          <div class="pills" id="typeFilters" role="group" aria-label="סינון לפי סוג תוכן">
-            <button class="pill active" data-type="all">הכל</button>
-            <button class="pill" data-type="משחק דיגיטלי">🎮 משחק דיגיטלי</button>
-            <button class="pill" data-type="מערך פעילות">📋 מערך פעילות</button>
-            <button class="pill" data-type="יחידת תוכן">📚 יחידת תוכן</button>
-            <button class="pill" data-type="מצגת הדרכה">📊 מצגת הדרכה</button>
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <label>גיל</label>
-          <div class="pills" id="ageFilters" role="group" aria-label="סינון לפי גיל">
-            <button class="pill active" data-age="all">הכל</button>
-            <button class="pill" data-age="3-4">3–4</button>
-            <button class="pill" data-age="4-5">4–5</button>
-            <button class="pill" data-age="5-6">5–6</button>
-          </div>
-        </div>
-
-        <button class="pill pill-clear" onclick="clearFilters()">נקה ✕</button>
-
-      </div>
-
-      <p class="results-count" id="resultsCount"></p>
-
-      <div class="cards-grid" id="cardsGrid" aria-live="polite" aria-label="תכנים"></div>
-
-    </div>
-  </section>
-
-  <!-- ════════════════════════ ABOUT SECTION ════════════════════════ -->
-  <section class="about-section" id="about">
-    <div class="container about-inner">
-
-      <div class="about-visual reveal">
-        <div class="about-avatar" aria-hidden="true">👩‍🏫</div>
-        <div class="about-tags">
-          <span>👶 גיל הרך 3–6</span>
-          <span>🎓 חינוך מיוחד</span>
-          <span>💡 למידה דיגיטלית</span>
-        </div>
-      </div>
-
-      <div class="about-text reveal delay-1">
-        <h2>קצת עליי</h2>
-        <p>
-          שמי אנה גלפר, גננת ומחנכת מנוסה המתמחה בחינוך לגיל הרך. מאז ומתמיד האמנתי שלמידה בגיל הרך חייבת להיות שמחה, משמעותית ומותאמת לעולמו של הילד.
+        <p class="hero-p reveal delay-3">
+          משחקים, פעילויות, יחידות תוכן ומצגות — לגיל 3–6
         </p>
-        <p>
-          פיתחתי את מרחב הלמידה הדיגיטלי הזה מתוך רצון לשתף את הכלים, המשחקים ומערכי הפעילות שיצרתי לאורך שנות עבודתי — כדי שגננות והורים בכל הארץ יוכלו להיעזר בהם.
-        </p>
-        <p>
-          כל התכנים פותחו בהתאם לצרכים ולמאפייני ההתפתחות של ילדים בגילאי 3–6, תוך שמירה על גישה משחקית, צבעונית ומתאימה לתוכנית הלאומית לגיל הרך.
-        </p>
-        <a href="#contact" class="btn btn-primary">בואו נדבר</a>
-      </div>
 
-    </div>
-  </section>
-
-  <!-- ════════════════════════ CONTACT SECTION ════════════════════════ -->
-  <section class="contact-section" id="contact">
-    <div class="container">
-      <div class="contact-card reveal">
-
-        <div class="sec-head">
-          <h2>צור קשר</h2>
-          <p>שאלות, הצעות לשיתוף פעולה, או סתם שלום? — כתבו לי!</p>
+        <div class="hero-btns reveal delay-3">
+          <a href="#portals" class="btn-primary">כניסה לתכנים ↓</a>
+          <a href="about.html" class="btn-ghost">אודות אנה</a>
         </div>
 
-        <form class="contact-form" onsubmit="handleSubmit(event)" novalidate>
-
-          <div class="form-row">
-            <div class="field">
-              <label for="contactName">שם מלא</label>
-              <input type="text" id="contactName" name="name" placeholder="השם שלך" required />
-            </div>
-            <div class="field">
-              <label for="contactEmail">דוא"ל</label>
-              <input type="email" id="contactEmail" name="email" placeholder="your@email.com" required />
-            </div>
+        <div class="hero-stats reveal delay-4" aria-label="סיכום תכנים">
+          <div class="hstat">
+            <span class="hstat-num">4</span>
+            <span class="hstat-lbl">סוגי תוכן</span>
           </div>
-
-          <div class="field">
-            <label for="contactSubject">נושא</label>
-            <select id="contactSubject" name="subject" required>
-              <option value="" disabled selected>בחרו נושא...</option>
-              <option value="general">שאלה כללית</option>
-              <option value="collab">שיתוף פעולה</option>
-              <option value="content">בקשה לתוכן</option>
-              <option value="tech">בעיה טכנית</option>
-            </select>
+          <div class="hstat-sep" aria-hidden="true"></div>
+          <div class="hstat">
+            <span class="hstat-num">8+</span>
+            <span class="hstat-lbl">נושאים</span>
           </div>
-
-          <div class="field">
-            <label for="contactMessage">הודעה</label>
-            <textarea id="contactMessage" name="message" rows="5" placeholder="כתבו כאן את ההודעה שלכם..." required></textarea>
+          <div class="hstat-sep" aria-hidden="true"></div>
+          <div class="hstat">
+            <span class="hstat-num">3–6</span>
+            <span class="hstat-lbl">גיל מומלץ</span>
           </div>
-
-          <button type="submit" class="btn btn-primary" id="submitBtn">שלחו הודעה ✉</button>
-
-        </form>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+      <!-- Wave -->
+      <div class="hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#F9F6EF"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ═══════════════ PORTALS ═══════════════ -->
+    <section class="portals-section" id="portals" aria-label="עולמות התוכן">
+      <div class="container">
+        <span class="sec-eyebrow reveal">בחרו את הדרך שלכם</span>
+        <span class="sec-title reveal delay-1">גלו את ארבעת עולמות התוכן</span>
+
+        <div class="portals-bento reveal delay-2">
+          <!-- XL featured card: games -->
+          <a href="games.html" class="portal-card portal-xl portal-games" aria-label="משחקים דיגיטליים">
+            <span class="portal-icon" aria-hidden="true">🎮</span>
+            <h3>משחקים דיגיטליים</h3>
+            <p>משחקים אינטראקטיביים ומהנים — ללמוד תוך כדי משחק</p>
+            <span class="portal-count" data-count-type="משחק דיגיטלי" aria-live="polite"></span>
+            <span class="portal-arrow" aria-hidden="true">←</span>
+          </a>
+
+          <!-- Stack of 3 smaller cards -->
+          <div class="portals-stack">
+            <a href="activities.html" class="portal-card portal-plans" aria-label="מערכי פעילות">
+              <span class="portal-icon" aria-hidden="true">📋</span>
+              <div>
+                <h3>מערכי פעילות</h3>
+                <p>תוכניות מוכנות לשימוש לגננות</p>
+                <span class="portal-count" data-count-type="מערך פעילות" aria-live="polite"></span>
+              </div>
+              <span class="portal-arrow" aria-hidden="true">←</span>
+            </a>
+
+            <a href="units.html" class="portal-card portal-units" aria-label="יחידות תוכן">
+              <span class="portal-icon" aria-hidden="true">📚</span>
+              <div>
+                <h3>יחידות תוכן</h3>
+                <p>יחידות לימוד מקיפות לגיל הרך</p>
+                <span class="portal-count" data-count-type="יחידת תוכן" aria-live="polite"></span>
+              </div>
+              <span class="portal-arrow" aria-hidden="true">←</span>
+            </a>
+
+            <a href="presentations.html" class="portal-card portal-pres" aria-label="מצגות הדרכה">
+              <span class="portal-icon" aria-hidden="true">📊</span>
+              <div>
+                <h3>מצגות הדרכה</h3>
+                <p>מצגות מקצועיות לגננות ולהורים</p>
+                <span class="portal-count" data-count-type="מצגת הדרכה" aria-live="polite"></span>
+              </div>
+              <span class="portal-arrow" aria-hidden="true">←</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ MINI ABOUT ═══════════════ -->
+    <section class="home-about-band" aria-label="אודות אנה">
+      <div class="container">
+        <div class="home-about-inner reveal">
+          <div class="home-about-avatar" aria-hidden="true">👩‍🏫</div>
+          <div class="home-about-text">
+            <h2>שלום, אני אנה גלפר 👋</h2>
+            <p>
+              גננת מוסמכת עם ניסיון עשיר בחינוך לגיל הרך.
+              אני יוצרת חומרים פדגוגיים חינמיים ומקצועיים לגננות, הורים וילדים בגילאי 3–6.
+            </p>
+            <a href="about.html" class="home-about-link">קראו עוד עלי ←</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
   <footer class="site-footer">
+    <div class="ftr-wave" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,30 C360,0 1080,60 1440,20 L1440,0 L0,0 Z" fill="#F2EDE2"/>
+      </svg>
+    </div>
     <div class="container ftr-inner">
       <div class="ftr-brand">
         <img src="logo.png" alt="אנה גלפר" class="ftr-logo" />
         <p>מרחב למידה דיגיטלי לגיל הרך<br />לגננות, הורים וילדים בגיל 3–6</p>
       </div>
       <nav class="ftr-nav" aria-label="ניווט תחתון">
-        <a href="#library">ספרייה</a>
-        <a href="#topics">נושאים</a>
-        <a href="#types">סוגי תכנים</a>
-        <a href="#about">עליי</a>
-        <a href="#contact">צור קשר</a>
+        <a href="index.html">בית</a>
+        <a href="games.html">משחקים</a>
+        <a href="activities.html">פעילויות</a>
+        <a href="units.html">יחידות</a>
+        <a href="presentations.html">מצגות</a>
+        <a href="about.html">אודות</a>
       </nav>
     </div>
     <div class="container ftr-copy">
-      <p>© 2025 אנה גלפר — כל הזכויות שמורות. פותח באהבה לגיל הרך 🌈</p>
+      <p>© 2026 אנה גלפר — כל הזכויות שמורות 🦋</p>
     </div>
   </footer>
 

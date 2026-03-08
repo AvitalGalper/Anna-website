@@ -1,11 +1,8 @@
-// ══════════════════════════════════════════════════════
-// script.js — לוגיקה של האתר
-// הנתונים נמצאים ב-data.js — שם עורכים תכנים.
-// ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// script.js — Anna Galper | Multi-page logic
+// Data lives in data.js (CONTENT_DATA global object).
+// ══════════════════════════════════════════════════════════════
 
-/* ─────────────────────────────────────────
-   TYPE CONFIG
-───────────────────────────────────────── */
 const TYPE_CONFIG = {
   "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶" },
   "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗"  },
@@ -13,47 +10,27 @@ const TYPE_CONFIG = {
   "מצגת הדרכה":  { cls: "pres",  cta: "פתח מצגת ↗"  }
 };
 
-/* ─────────────────────────────────────────
-   BUILD FLAT ARRAY FROM CONTENT_DATA
-───────────────────────────────────────── */
+// ── Build flat resources array from data.js ──
 let allResources = [];
-
 if (typeof CONTENT_DATA !== "undefined") {
   Object.entries(CONTENT_DATA).forEach(([type, items]) => {
     if (Array.isArray(items)) {
-      items.forEach(item => {
-        allResources.push({ ...item, type });
-      });
+      items.forEach(item => allResources.push({ ...item, type }));
     }
   });
 }
 
-/* ─────────────────────────────────────────
-   STATE
-───────────────────────────────────────── */
-let activeType  = "all";
+// ── Current page type (null on home / about) ──
+const PAGE_TYPE = document.body.dataset.pageType || null;
+
+// ── Filter state ──
 let activeTopic = "all";
 let activeAge   = "all";
 let searchQuery = "";
 
-/* ─────────────────────────────────────────
-   HIGHLIGHT SEARCH MATCH
-   Returns HTML string with <mark> around
-   the matching portion of text.
-───────────────────────────────────────── */
-function highlightMatch(text, query) {
-  if (!query || query.length === 0) {
-    return escapeHtml(text);
-  }
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const regex = new RegExp("(" + escapedQuery + ")", "gi");
-  return escapeHtml(text).replace(
-    new RegExp("(" + escapeHtml(escapedQuery) + ")", "gi"),
-    '<mark class="search-mark">$1</mark>'
-  );
-}
-
-/* Helper to escape HTML special characters */
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -63,547 +40,374 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
-/* ─────────────────────────────────────────
-   CREATE CARD ELEMENT
-───────────────────────────────────────── */
+function highlightMatch(text, query) {
+  if (!query) return escapeHtml(text);
+  const safe = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return escapeHtml(text).replace(
+    new RegExp("(" + escapeHtml(safe) + ")", "gi"),
+    '<mark class="search-mark">$1</mark>'
+  );
+}
+
+// ══════════════════════════════════════════
+// CREATE CARD
+// ══════════════════════════════════════════
 function createCard(item) {
   const cfg = TYPE_CONFIG[item.type] || { cls: "games", cta: "פתח ↗" };
 
   const article = document.createElement("article");
   article.className = "rcard";
   article.setAttribute("data-type", item.type);
-  article.setAttribute("role", "article");
   article.setAttribute("tabindex", "0");
 
-  // ── Thumbnail ──
+  // Thumbnail
   const thumb = document.createElement("div");
   thumb.className = "rcard-thumb";
-
-  if (item.image && item.image.trim() !== "") {
+  if (item.image) {
     const img = document.createElement("img");
     img.src = item.image;
-    img.alt = item.title || "";
+    img.alt = item.title;
     img.loading = "lazy";
     thumb.appendChild(img);
   } else {
-    const emojiSpan = document.createElement("span");
-    emojiSpan.className = "rcard-emoji";
-    emojiSpan.setAttribute("aria-hidden", "true");
-    emojiSpan.textContent = item.emoji || "📄";
-    thumb.appendChild(emojiSpan);
+    const emo = document.createElement("span");
+    emo.className = "rcard-emoji";
+    emo.textContent = item.emoji || "📄";
+    thumb.appendChild(emo);
   }
+  article.appendChild(thumb);
 
-  // ── Body ──
+  // Body
   const body = document.createElement("div");
   body.className = "rcard-body";
 
   // Tags row
-  const tagsDiv = document.createElement("div");
-  tagsDiv.className = "rcard-tags";
+  const tags = document.createElement("div");
+  tags.className = "rcard-tags";
 
-  // Type tag
   const typeTag = document.createElement("span");
-  typeTag.className = "rtag rtag-" + cfg.cls;
+  typeTag.className = `rtag rtag-${cfg.cls}`;
   typeTag.textContent = item.type;
-  tagsDiv.appendChild(typeTag);
+  tags.appendChild(typeTag);
 
-  // Topic tag
   if (item.topic) {
-    const topicTag = document.createElement("span");
-    topicTag.className = "rtag rtag-topic";
-    topicTag.textContent = item.topic;
-    tagsDiv.appendChild(topicTag);
+    const tTag = document.createElement("span");
+    tTag.className = "rtag rtag-topic";
+    tTag.textContent = item.topic;
+    tags.appendChild(tTag);
   }
-
-  // Age tags
-  if (Array.isArray(item.age) && item.age.length > 0) {
-    item.age.forEach(ageVal => {
-      const ageTag = document.createElement("span");
-      ageTag.className = "rtag rtag-age";
-      ageTag.textContent = "גיל " + ageVal;
-      tagsDiv.appendChild(ageTag);
-    });
+  if (item.age && item.age.length) {
+    const aTag = document.createElement("span");
+    aTag.className = "rtag rtag-age";
+    aTag.textContent = "גיל " + item.age.join(", ");
+    tags.appendChild(aTag);
   }
+  body.appendChild(tags);
 
-  body.appendChild(tagsDiv);
-
-  // Title (with search highlight)
+  // Title
   const h3 = document.createElement("h3");
-  h3.innerHTML = highlightMatch(item.title || "", searchQuery);
+  h3.innerHTML = highlightMatch(item.title, searchQuery);
   body.appendChild(h3);
 
   // Description
   const desc = document.createElement("p");
-  desc.textContent = item.description || "";
+  desc.innerHTML = highlightMatch(item.description || "", searchQuery);
   body.appendChild(desc);
 
   // CTA button
-  const btn = document.createElement("a");
-  btn.className = "rcard-btn rcard-btn-" + cfg.cls;
-  btn.textContent = cfg.cta;
-  btn.href = item.link || "#";
-  btn.target = "_blank";
-  btn.rel = "noopener noreferrer";
-  btn.setAttribute("aria-label", cfg.cta + " — " + (item.title || ""));
+  if (item.link) {
+    const btn = document.createElement("a");
+    btn.href = item.link;
+    btn.target = "_blank";
+    btn.rel = "noopener noreferrer";
+    btn.className = `rcard-btn rcard-btn-${cfg.cls}`;
+    btn.textContent = cfg.cta;
+    body.appendChild(btn);
 
-  btn.addEventListener("click", function (e) {
-    e.stopPropagation();
-  });
+    article.addEventListener("click", (e) => {
+      if (!e.target.closest("a")) window.open(item.link, "_blank");
+    });
+    article.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") window.open(item.link, "_blank");
+    });
+  }
 
-  body.appendChild(btn);
-
-  // Assemble card
-  article.appendChild(thumb);
   article.appendChild(body);
-
-  // Click anywhere on card opens link
-  article.addEventListener("click", function () {
-    if (item.link && item.link !== "#") {
-      window.open(item.link, "_blank", "noopener,noreferrer");
-    }
-  });
-
-  // Keyboard: Enter opens link
-  article.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      if (item.link && item.link !== "#") {
-        window.open(item.link, "_blank", "noopener,noreferrer");
-      }
-    }
-  });
-
   return article;
 }
 
-/* ─────────────────────────────────────────
-   RENDER CARDS
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// RENDER CARDS
+// ══════════════════════════════════════════
 function renderCards() {
   const grid = document.getElementById("cardsGrid");
-  const countEl = document.getElementById("resultsCount");
-
   if (!grid) return;
 
-  // Filter
   const filtered = allResources.filter(item => {
-    // Type filter
-    if (activeType !== "all" && item.type !== activeType) return false;
-
-    // Topic filter
+    // Filter by page type
+    if (PAGE_TYPE && item.type !== PAGE_TYPE) return false;
+    // Filter by topic
     if (activeTopic !== "all" && item.topic !== activeTopic) return false;
-
-    // Age filter
-    if (activeAge !== "all") {
-      if (!Array.isArray(item.age) || !item.age.includes(activeAge)) return false;
+    // Filter by age
+    if (activeAge !== "all" && !(item.age || []).includes(activeAge)) return false;
+    // Filter by search
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const inTitle = item.title.toLowerCase().includes(q);
+      const inDesc  = (item.description || "").toLowerCase().includes(q);
+      if (!inTitle && !inDesc) return false;
     }
-
-    // Search filter (title + description, case-insensitive)
-    if (searchQuery.length > 0) {
-      const title = (item.title || "").toLowerCase();
-      const desc  = (item.description || "").toLowerCase();
-      if (!title.includes(searchQuery) && !desc.includes(searchQuery)) return false;
-    }
-
     return true;
   });
 
-  // Clear grid
-  grid.innerHTML = "";
-
   // Update results count
-  if (countEl) {
-    if (filtered.length === 0) {
-      countEl.textContent = "";
-    } else if (filtered.length === 1) {
-      countEl.textContent = "נמצא תוצאה אחת";
-    } else {
-      countEl.textContent = "נמצאו " + filtered.length + " תכנים";
-    }
+  const count = document.getElementById("resultsCount");
+  if (count) {
+    count.textContent = filtered.length
+      ? `נמצאו ${filtered.length} תכנים`
+      : "";
   }
 
-  // Render cards or empty state
-  if (filtered.length === 0) {
+  // Build DOM
+  const frag = document.createDocumentFragment();
+  if (!filtered.length) {
     const empty = document.createElement("div");
     empty.className = "empty-state";
-    empty.innerHTML =
-      '<span class="es-icon" aria-hidden="true">🔍</span>' +
-      "<p>לא נמצאו תכנים תואמים. נסו לשנות את הסינון או החיפוש.</p>";
-    grid.appendChild(empty);
+    empty.innerHTML = `<span class="es-icon">🔍</span><p>לא נמצאו תכנים. נסו לשנות את הסינון.</p>`;
+    frag.appendChild(empty);
   } else {
-    filtered.forEach(item => {
-      grid.appendChild(createCard(item));
-    });
+    filtered.forEach(item => frag.appendChild(createCard(item)));
   }
+
+  grid.innerHTML = "";
+  grid.appendChild(frag);
 }
 
-/* ─────────────────────────────────────────
-   SEARCH — input & clear
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════
 function initSearch() {
-  const input     = document.getElementById("searchInput");
-  const clearBtn  = document.getElementById("searchClear");
+  const input = document.getElementById("searchInput");
+  const clear = document.getElementById("searchClear");
+  if (!input) return;
 
-  if (!input || !clearBtn) return;
-
-  function updateClearVisibility() {
-    clearBtn.style.display = input.value.length > 0 ? "block" : "none";
-  }
-
-  input.addEventListener("input", function () {
-    searchQuery = input.value.trim().toLowerCase();
-    updateClearVisibility();
+  input.addEventListener("input", () => {
+    searchQuery = input.value.trim();
+    if (clear) clear.style.display = searchQuery ? "flex" : "none";
     renderCards();
   });
 
-  clearBtn.addEventListener("click", function () {
-    input.value = "";
-    searchQuery = "";
-    clearBtn.style.display = "none";
-    input.focus();
-    renderCards();
-  });
-
-  // Initial state
-  updateClearVisibility();
-}
-
-/* ─────────────────────────────────────────
-   TYPE FILTER PILLS
-───────────────────────────────────────── */
-function initTypeFilters() {
-  const container = document.getElementById("typeFilters");
-  if (!container) return;
-
-  container.addEventListener("click", function (e) {
-    const pill = e.target.closest(".pill");
-    if (!pill) return;
-
-    const type = pill.dataset.type;
-    if (!type) return;
-
-    activeType = type;
-
-    // Update active class
-    container.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-
-    renderCards();
-  });
-}
-
-/* ─────────────────────────────────────────
-   AGE FILTER PILLS
-───────────────────────────────────────── */
-function initAgeFilters() {
-  const container = document.getElementById("ageFilters");
-  if (!container) return;
-
-  container.addEventListener("click", function (e) {
-    const pill = e.target.closest(".pill");
-    if (!pill) return;
-
-    const age = pill.dataset.age;
-    if (!age) return;
-
-    activeAge = age;
-
-    // Update active class
-    container.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-
-    renderCards();
-  });
-}
-
-/* ─────────────────────────────────────────
-   TOPIC BUTTONS
-───────────────────────────────────────── */
-function initTopicButtons() {
-  const btns = document.querySelectorAll(".topic-btn");
-
-  btns.forEach(btn => {
-    btn.addEventListener("click", function () {
-      const topic = btn.dataset.topic;
-      if (!topic) return;
-
-      activeTopic = topic;
-
-      // Update active + aria
-      btns.forEach(b => {
-        b.classList.remove("active");
-        b.setAttribute("aria-pressed", "false");
-      });
-      btn.classList.add("active");
-      btn.setAttribute("aria-pressed", "true");
-
-      // Scroll to library
-      const library = document.getElementById("library");
-      if (library) {
-        library.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
+  if (clear) {
+    clear.addEventListener("click", () => {
+      input.value = "";
+      searchQuery = "";
+      clear.style.display = "none";
       renderCards();
+      input.focus();
     });
+  }
+}
+
+// ══════════════════════════════════════════
+// TOPIC FILTER  (class="tpill", data-topic)
+// ══════════════════════════════════════════
+function initTopicFilters() {
+  const wrap = document.getElementById("topicFilters");
+  if (!wrap) return;
+
+  wrap.addEventListener("click", e => {
+    const btn = e.target.closest("[data-topic]");
+    if (!btn) return;
+    activeTopic = btn.dataset.topic;
+    wrap.querySelectorAll("[data-topic]").forEach(b => {
+      const isActive = b === btn;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-pressed", String(isActive));
+    });
+    renderCards();
   });
 }
 
-/* ─────────────────────────────────────────
-   FILTER AND GO
-   Called from type-card onclick
-───────────────────────────────────────── */
-function filterAndGo(type) {
-  activeType = type;
+// ══════════════════════════════════════════
+// AGE FILTER  (class="pill", data-age)
+// ══════════════════════════════════════════
+function initAgeFilters() {
+  const wrap = document.getElementById("ageFilters");
+  if (!wrap) return;
 
-  // Update type pill UI
-  const typeFilters = document.getElementById("typeFilters");
-  if (typeFilters) {
-    typeFilters.querySelectorAll(".pill").forEach(p => {
-      p.classList.remove("active");
-      if (p.dataset.type === type) {
-        p.classList.add("active");
-      }
+  wrap.addEventListener("click", e => {
+    const btn = e.target.closest("[data-age]");
+    if (!btn) return;
+    activeAge = btn.dataset.age;
+    wrap.querySelectorAll("[data-age]").forEach(b => {
+      const isActive = b === btn;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-pressed", String(isActive));
     });
-  }
-
-  renderCards();
-
-  // Scroll to library
-  const library = document.getElementById("library");
-  if (library) {
-    library.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+    renderCards();
+  });
 }
 
-/* ─────────────────────────────────────────
-   CLEAR ALL FILTERS
-   Called from pill-clear onclick
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// CLEAR ALL FILTERS
+// ══════════════════════════════════════════
 function clearFilters() {
-  // Reset state
-  activeType  = "all";
   activeTopic = "all";
   activeAge   = "all";
   searchQuery = "";
 
-  // Reset search input
-  const input    = document.getElementById("searchInput");
-  const clearBtn = document.getElementById("searchClear");
-  if (input)    input.value = "";
-  if (clearBtn) clearBtn.style.display = "none";
+  const si = document.getElementById("searchInput");
+  if (si) si.value = "";
+  const sc = document.getElementById("searchClear");
+  if (sc) sc.style.display = "none";
 
-  // Reset type pills
-  const typeFilters = document.getElementById("typeFilters");
-  if (typeFilters) {
-    typeFilters.querySelectorAll(".pill").forEach(p => {
-      p.classList.remove("active");
-      if (p.dataset.type === "all") p.classList.add("active");
-    });
-  }
-
-  // Reset age pills
-  const ageFilters = document.getElementById("ageFilters");
-  if (ageFilters) {
-    ageFilters.querySelectorAll(".pill").forEach(p => {
-      p.classList.remove("active");
-      if (p.dataset.age === "all") p.classList.add("active");
-    });
-  }
-
-  // Reset topic buttons
-  const topicBtns = document.querySelectorAll(".topic-btn");
-  topicBtns.forEach(b => {
-    b.classList.remove("active");
-    b.setAttribute("aria-pressed", "false");
-    if (b.dataset.topic === "all") {
-      b.classList.add("active");
-      b.setAttribute("aria-pressed", "true");
-    }
+  document.querySelectorAll("[data-topic]").forEach(b => {
+    const isAll = b.dataset.topic === "all";
+    b.classList.toggle("active", isAll);
+    b.setAttribute("aria-pressed", String(isAll));
+  });
+  document.querySelectorAll("[data-age]").forEach(b => {
+    const isAll = b.dataset.age === "all";
+    b.classList.toggle("active", isAll);
+    b.setAttribute("aria-pressed", String(isAll));
   });
 
   renderCards();
 }
 
-/* ─────────────────────────────────────────
-   MOBILE MENU TOGGLE
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// MOBILE MENU
+// ══════════════════════════════════════════
 function initMobileMenu() {
-  const burger     = document.getElementById("burgerBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
+  const burger = document.getElementById("burgerBtn");
+  const menu   = document.getElementById("mobileMenu");
+  if (!burger || !menu) return;
 
-  if (!burger || !mobileMenu) return;
+  burger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = burger.classList.toggle("open");
+    menu.classList.toggle("open", open);
+    burger.setAttribute("aria-expanded", String(open));
+    menu.setAttribute("aria-hidden", String(!open));
+  });
 
-  burger.addEventListener("click", function () {
-    const isOpen = mobileMenu.classList.contains("open");
-
-    if (isOpen) {
-      mobileMenu.classList.remove("open");
+  document.addEventListener("click", e => {
+    if (!burger.contains(e.target) && !menu.contains(e.target)) {
       burger.classList.remove("open");
+      menu.classList.remove("open");
       burger.setAttribute("aria-expanded", "false");
-      mobileMenu.setAttribute("aria-hidden", "true");
-    } else {
-      mobileMenu.classList.add("open");
-      burger.classList.add("open");
-      burger.setAttribute("aria-expanded", "true");
-      mobileMenu.setAttribute("aria-hidden", "false");
+      menu.setAttribute("aria-hidden", "true");
     }
   });
 
-  // Close menu when any mobile link is clicked
-  mobileMenu.querySelectorAll(".mobile-link").forEach(link => {
-    link.addEventListener("click", function () {
-      mobileMenu.classList.remove("open");
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
       burger.classList.remove("open");
+      menu.classList.remove("open");
       burger.setAttribute("aria-expanded", "false");
-      mobileMenu.setAttribute("aria-hidden", "true");
+      menu.setAttribute("aria-hidden", "true");
     });
   });
-
-  // Close menu when clicking outside
-  document.addEventListener("click", function (e) {
-    if (
-      mobileMenu.classList.contains("open") &&
-      !mobileMenu.contains(e.target) &&
-      !burger.contains(e.target)
-    ) {
-      mobileMenu.classList.remove("open");
-      burger.classList.remove("open");
-      burger.setAttribute("aria-expanded", "false");
-      mobileMenu.setAttribute("aria-hidden", "true");
-    }
-  });
 }
 
-/* ─────────────────────────────────────────
-   HEADER SCROLL SHADOW
-───────────────────────────────────────── */
-function initHeaderScroll() {
-  const header = document.getElementById("siteHeader");
-  if (!header) return;
-
-  function onScroll() {
-    if (window.scrollY > 10) {
-      header.classList.add("scrolled");
-    } else {
-      header.classList.remove("scrolled");
-    }
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll(); // run once on load
-}
-
-/* ─────────────────────────────────────────
-   SCROLL REVEAL WITH IntersectionObserver
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════════
 function initScrollReveal() {
-  const revealEls = document.querySelectorAll(".reveal");
+  const items = document.querySelectorAll(".reveal");
+  if (!items.length) return;
 
   if (!("IntersectionObserver" in window)) {
-    // Fallback: just make everything visible
-    revealEls.forEach(el => el.classList.add("visible"));
+    items.forEach(el => el.classList.add("visible"));
     return;
   }
 
-  const observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.1 }
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        obs.unobserve(e.target);
+      }
+    }),
+    { threshold: 0.08 }
   );
-
-  revealEls.forEach(el => observer.observe(el));
+  items.forEach(el => obs.observe(el));
 }
 
-/* ─────────────────────────────────────────
-   CONTACT FORM SUBMIT HANDLER
-───────────────────────────────────────── */
+// ══════════════════════════════════════════
+// HEADER SCROLL SHADOW
+// ══════════════════════════════════════════
+function initHeaderScroll() {
+  const hdr = document.getElementById("siteHeader");
+  if (!hdr) return;
+  const update = () => hdr.classList.toggle("scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+}
+
+// ══════════════════════════════════════════
+// CONTACT FORM
+// ══════════════════════════════════════════
 function handleSubmit(e) {
   e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  if (!btn) return;
 
-  const form      = e.target;
-  const submitBtn = document.getElementById("submitBtn");
+  const name  = document.getElementById("contactName")?.value.trim();
+  const email = document.getElementById("contactEmail")?.value.trim();
+  const msg   = document.getElementById("contactMessage")?.value.trim();
 
-  // Basic validation
-  const name    = form.querySelector("#contactName");
-  const email   = form.querySelector("#contactEmail");
-  const subject = form.querySelector("#contactSubject");
-  const message = form.querySelector("#contactMessage");
-
-  if (!name || !name.value.trim()) {
-    name && name.focus();
-    return;
-  }
-  if (!email || !email.value.trim()) {
-    email && email.focus();
-    return;
-  }
-  if (!subject || !subject.value) {
-    subject && subject.focus();
-    return;
-  }
-  if (!message || !message.value.trim()) {
-    message && message.focus();
+  if (!name || !email || !msg) {
+    btn.textContent = "אנא מלאו את כל השדות הנדרשים";
+    btn.style.background = "#c0392b";
+    setTimeout(() => {
+      btn.textContent = "שלחו הודעה ✉";
+      btn.style.background = "";
+    }, 2800);
     return;
   }
 
-  // Success animation
-  if (submitBtn) {
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = "✅ ההודעה נשלחה! תודה רבה";
-    submitBtn.disabled = true;
-    submitBtn.style.background = "var(--teal)";
-    submitBtn.style.transform = "scale(1.04)";
-
-    setTimeout(function () {
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-      submitBtn.style.background = "";
-      submitBtn.style.transform = "";
-    }, 3500);
-  }
-
-  // Reset form fields
-  form.reset();
+  btn.textContent = "✓ ההודעה נשלחה! תודה";
+  btn.style.background = "#457A5A";
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = "שלחו הודעה ✉";
+    btn.style.background = "";
+    btn.disabled = false;
+    e.target.reset();
+  }, 3500);
 }
 
-/* ─────────────────────────────────────────
-   KEYBOARD NAVIGATION FOR TYPE CARDS
-───────────────────────────────────────── */
-function initTypeCardKeyboard() {
-  document.querySelectorAll(".type-card").forEach(card => {
-    card.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        card.click();
-      }
-    });
+// ══════════════════════════════════════════
+// HOMEPAGE: item counts on portal cards
+// ══════════════════════════════════════════
+function initHomeCounts() {
+  if (typeof CONTENT_DATA === "undefined") return;
+  document.querySelectorAll("[data-count-type]").forEach(el => {
+    const type  = el.dataset.countType;
+    const count = Array.isArray(CONTENT_DATA[type]) ? CONTENT_DATA[type].length : 0;
+    el.textContent = count + " תכנים";
   });
 }
 
-/* ─────────────────────────────────────────
-   INIT — called on DOMContentLoaded
-───────────────────────────────────────── */
-function init() {
-  renderCards();
-  initScrollReveal();
-  initSearch();
-  initTypeFilters();
-  initAgeFilters();
-  initTopicButtons();
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
   initMobileMenu();
+  initScrollReveal();
   initHeaderScroll();
-  initTypeCardKeyboard();
-}
 
-// Entry point
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
-}
+  // Content pages only
+  if (document.getElementById("cardsGrid")) {
+    renderCards();
+    initSearch();
+    initTopicFilters();
+    initAgeFilters();
+  }
+
+  // Homepage only
+  if (document.body.dataset.page === "home") {
+    initHomeCounts();
+  }
+});

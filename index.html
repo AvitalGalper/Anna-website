@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>קטנטנים דיגיטליים – אנה גלפר</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ════════════════════════
+       HEADER
+  ════════════════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="container hdr-inner">
+      <img src="logo.png" alt="קטנטנים דיגיטליים" class="hdr-logo" />
+      <nav class="hdr-nav">
+        <a href="#types">תכנים</a>
+        <a href="#topics">נושאים</a>
+        <a href="#library">ספרייה</a>
+        <a href="#about">עלי</a>
+        <a href="#contact">צור קשר</a>
+      </nav>
+      <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="hdr-mobile" id="mobileMenu">
+      <a href="#types"   onclick="closeMobile()">תכנים</a>
+      <a href="#topics"  onclick="closeMobile()">נושאים</a>
+      <a href="#library" onclick="closeMobile()">ספרייה</a>
+      <a href="#about"   onclick="closeMobile()">עלי</a>
+      <a href="#contact" onclick="closeMobile()">צור קשר</a>
+    </div>
+  </header>
+
+  <!-- ════════════════════════
+       HERO
+  ════════════════════════ -->
+  <section class="hero">
+    <div class="hero-deco" aria-hidden="true">
+      <div class="deco-circle dc1"></div>
+      <div class="deco-circle dc2"></div>
+      <div class="deco-circle dc3"></div>
+      <div class="deco-star ds1">✦</div>
+      <div class="deco-star ds2">✦</div>
+      <div class="deco-star ds3">✦</div>
+    </div>
+    <div class="container hero-body">
+      <div class="hero-logo-wrap reveal">
+        <img src="logo.png" alt="קטנטנים דיגיטליים" class="hero-logo" />
+        <span class="butterfly bf-1" aria-hidden="true">🦋</span>
+        <span class="butterfly bf-2" aria-hidden="true">🦋</span>
+        <span class="butterfly bf-3" aria-hidden="true">🦋</span>
+        <span class="butterfly bf-4" aria-hidden="true">🦋</span>
+        <span class="butterfly bf-5" aria-hidden="true">🦋</span>
+        <span class="butterfly bf-6" aria-hidden="true">🦋</span>
+      </div>
+      <h1 class="hero-h1 reveal delay-1">
+        מרחב למידה דיגיטלי לגיל הרך<br class="br-desktop" /> של אנה גלפר
+      </h1>
+      <p class="hero-p reveal delay-2">
+        משחקים דיגיטליים, מערכי פעילות, יחידות תוכן ומצגות הדרכה לגננות ולהורים.
+      </p>
+      <div class="hero-btns reveal delay-3">
+        <a href="#library" class="btn btn-primary">כניסה לתכנים</a>
+        <a href="#about"   class="btn btn-outline">קצת עליי</a>
+      </div>
+      <div class="hero-stats reveal delay-4">
+        <div class="hstat"><span class="hstat-num">4</span><span class="hstat-lbl">סוגי תוכן</span></div>
+        <div class="hstat-sep"></div>
+        <div class="hstat"><span class="hstat-num">8+</span><span class="hstat-lbl">נושאי למידה</span></div>
+        <div class="hstat-sep"></div>
+        <div class="hstat"><span class="hstat-num">3–6</span><span class="hstat-lbl">גיל</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       CONTENT TYPES
+  ════════════════════════ -->
+  <section class="types-section" id="types">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2>סוגי התכנים</h2>
+        <p>לחצו על כרטיס לסינון ישיר של כל התכנים הרלוונטיים</p>
+      </div>
+      <div class="types-grid">
+        <div class="type-card tc-games reveal" onclick="filterAndGo('משחק דיגיטלי')">
+          <div class="tc-icon">🎮</div>
+          <h3>משחקים דיגיטליים</h3>
+          <p>פעילויות אינטראקטיביות בפלטפורמת TinyTap – מהנות, מאתגרות ומותאמות לגיל</p>
+          <span class="tc-link">לכל המשחקים ←</span>
+        </div>
+        <div class="type-card tc-plans reveal delay-1" onclick="filterAndGo('מערך פעילות')">
+          <div class="tc-icon">📚</div>
+          <h3>מערכי פעילות</h3>
+          <p>תכניות מוכנות לשימוש – מטרות, חומרים ושלבי פעילות מפורטים</p>
+          <span class="tc-link">לכל המערכים ←</span>
+        </div>
+        <div class="type-card tc-units reveal delay-2" onclick="filterAndGo('יחידת תוכן')">
+          <div class="tc-icon">🧩</div>
+          <h3>יחידות תוכן</h3>
+          <p>חומרי למידה מקיפים לנושא שלם – לשבוע, לחודש ולכל שנת הלימודים</p>
+          <span class="tc-link">לכל היחידות ←</span>
+        </div>
+        <div class="type-card tc-pres reveal delay-3" onclick="filterAndGo('מצגת הדרכה')">
+          <div class="tc-icon">🖥️</div>
+          <h3>מצגות הדרכה</h3>
+          <p>מצגות מוכנות לילדים ולהורים – ויזואלי, ברור ומרתק</p>
+          <span class="tc-link">לכל המצגות ←</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       TOPICS
+  ════════════════════════ -->
+  <section class="topics-section" id="topics">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2>נושאי הלמידה</h2>
+        <p>לחצו על נושא לסינון כל התכנים הרלוונטיים</p>
+      </div>
+      <div class="topics-grid">
+        <button class="topic-btn active" data-topic="all">🌟<span>הכל</span></button>
+        <button class="topic-btn" data-topic="חגים">🕎<span>חגים</span></button>
+        <button class="topic-btn" data-topic="עונות השנה">🌸<span>עונות השנה</span></button>
+        <button class="topic-btn" data-topic="צבעים">🎨<span>צבעים</span></button>
+        <button class="topic-btn" data-topic="מספרים">🔢<span>מספרים</span></button>
+        <button class="topic-btn" data-topic="אותיות">🔤<span>אותיות</span></button>
+        <button class="topic-btn" data-topic="רגשות">😊<span>רגשות</span></button>
+        <button class="topic-btn" data-topic="חיות">🐾<span>חיות</span></button>
+        <button class="topic-btn" data-topic="צורות">🔷<span>צורות</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       LIBRARY
+  ════════════════════════ -->
+  <section class="library-section" id="library">
+    <div class="container">
+      <div class="sec-head reveal">
+        <h2>ספריית התכנים</h2>
+        <p>כל החומרים במקום אחד – סננו ומצאו בדיוק מה שאתם צריכים</p>
+      </div>
+
+      <div class="filter-bar reveal">
+        <div class="filter-group">
+          <label>סוג תוכן</label>
+          <div class="pills" id="typeFilters">
+            <button class="pill active" data-type="all">הכל</button>
+            <button class="pill" data-type="משחק דיגיטלי">🎮 משחקים</button>
+            <button class="pill" data-type="מערך פעילות">📚 מערכים</button>
+            <button class="pill" data-type="יחידת תוכן">🧩 יחידות</button>
+            <button class="pill" data-type="מצגת הדרכה">🖥️ מצגות</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>גיל</label>
+          <div class="pills" id="ageFilters">
+            <button class="pill active" data-age="all">כל הגילאים</button>
+            <button class="pill" data-age="3-4">3–4</button>
+            <button class="pill" data-age="4-5">4–5</button>
+            <button class="pill" data-age="5-6">5–6</button>
+          </div>
+        </div>
+        <button class="pill-clear" onclick="clearFilters()">נקה סינון ✕</button>
+      </div>
+
+      <p class="results-count" id="resultsCount"></p>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       ABOUT
+  ════════════════════════ -->
+  <section class="about-section" id="about">
+    <div class="container about-inner">
+      <div class="about-visual reveal">
+        <div class="about-avatar">👩‍🏫</div>
+        <div class="about-tags">
+          <span>🎓 מחנכת גיל הרך</span>
+          <span>💡 יוצרת תוכן דיגיטלי</span>
+          <span>📱 TinyTap Creator</span>
+        </div>
+      </div>
+      <div class="about-text reveal delay-1">
+        <h2>קצת עליי</h2>
+        <p>שלום, אני אנה גלפר – מחנכת גיל הרך עם ניסיון עשיר בעבודה עם ילדים בגילאי 3–6. לאורך השנים למדתי שהילדים לומדים הכי טוב כשהם שמחים, סקרנים ומרגישים בטוחים.</p>
+        <p>יצרתי ספרייה של תכנים דיגיטליים חינוכיים – משחקים, מערכי פעילות, יחידות תוכן ומצגות הדרכה – שמשלבים ידע פדגוגי מעמיק עם טכנולוגיה מודרנית.</p>
+        <p>התכנים מיועדים למחנכות גן, לגננות ולהורים שרוצים לתמוך בלמידה בבית – מוכנים לשימוש, גמישים ומלאי שמחה.</p>
+        <a href="#contact" class="btn btn-primary">בואו נדבר</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       CONTACT
+  ════════════════════════ -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="contact-card reveal">
+        <div class="sec-head">
+          <h2>צור קשר</h2>
+          <p>שאלות? שיתופי פעולה? שמחה לשמוע!</p>
+        </div>
+        <form class="contact-form" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="field">
+              <label>שם מלא</label>
+              <input type="text" placeholder="השם שלך" required />
+            </div>
+            <div class="field">
+              <label>אימייל</label>
+              <input type="email" placeholder="your@email.com" required />
+            </div>
+          </div>
+          <div class="field">
+            <label>סוג פנייה</label>
+            <select>
+              <option value="">בחרו סוג פנייה</option>
+              <option>שאלה על תוכן קיים</option>
+              <option>בקשה ליצירת תוכן</option>
+              <option>שיתוף פעולה</option>
+              <option>אחר</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>הודעה</label>
+            <textarea rows="4" placeholder="כתבו את ההודעה שלכם כאן..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">שלח הודעה ✉️</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════
+       FOOTER
+  ════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container ftr-inner">
+      <div class="ftr-brand">
+        <img src="logo.png" alt="קטנטנים דיגיטליים" class="ftr-logo" />
+        <p>משאבים חינוכיים דיגיטליים לגיל הרך</p>
+      </div>
+      <nav class="ftr-nav">
+        <a href="#types">תכנים</a>
+        <a href="#topics">נושאים</a>
+        <a href="#library">ספרייה</a>
+        <a href="#about">עלי</a>
+        <a href="#contact">צור קשר</a>
+      </nav>
+    </div>
+    <div class="container ftr-copy">
+      <p>© 2025 אנה גלפר | כל הזכויות שמורות</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

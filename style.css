@@ -70,7 +70,6 @@
 /* ── Per-page theme overrides ── */
 body[data-page="activities"]    { --page-color:#3D8B60; --page-color-dark:#27623F; --page-color-soft:#EBF6EF; --page-gradient:linear-gradient(135deg,#27623F,#3D8B60,#72B88A); }
 body[data-page="units"]         { --page-color:#7B5FC4; --page-color-dark:#5B3FA8; --page-color-soft:#F0ECFB; --page-gradient:linear-gradient(135deg,#4A2E9C,#7B5FC4,#A892E0); }
-body[data-page="presentations"] { --page-color:#D49020; --page-color-dark:#A86C0A; --page-color-soft:#FBF3DF; --page-gradient:linear-gradient(135deg,#A86C0A,#D49020,#EDB84A); }
 body[data-page="about"]         { --page-color:#E85D40; --page-color-dark:#C43F22; --page-color-soft:#FFF0EC; --page-gradient:linear-gradient(135deg,#C43F22,#E85D40,#F58B6A); }
 
 /* ══════════════════════════════════════════
@@ -753,7 +752,6 @@ ul, ol { list-style: none; }
 .portal-games { background: linear-gradient(135deg, #BF3820 0%, #E85D40 45%, #F59070 100%); }
 .portal-plans { background: linear-gradient(135deg, #1E5035 0%, #3D8B60 45%, #6AB88A 100%); }
 .portal-units { background: linear-gradient(135deg, #3A2090 0%, #7B5FC4 45%, #A48EE0 100%); }
-.portal-pres  { background: linear-gradient(135deg, #8A5B00 0%, #D49020 45%, #EDBA55 100%); }
 
 /* Portal icon */
 .portal-icon {
@@ -1198,7 +1196,6 @@ ul, ol { list-style: none; }
 .rcard[data-type="משחק דיגיטלי"]:hover { box-shadow: 0 18px 52px rgba(209,91,71,.28); }
 .rcard[data-type="מערך פעילות"]:hover  { box-shadow: 0 18px 52px rgba(69,122,90,.25); }
 .rcard[data-type="יחידת תוכן"]:hover   { box-shadow: 0 18px 52px rgba(123,110,168,.25); }
-.rcard[data-type="מצגת הדרכה"]:hover  { box-shadow: 0 18px 52px rgba(184,134,44,.25); }
 .rcard:focus {
   outline: 3px solid var(--page-color);
   outline-offset: 2px;
@@ -1255,13 +1252,6 @@ ul, ol { list-style: none; }
     radial-gradient(ellipse 50% 60% at 75% 65%, rgba(164,142,224,.20) 0%, transparent 60%),
     #F0EDFB;
 }
-.rcard[data-type="מצגת הדרכה"]  .rcard-thumb {
-  background:
-    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(212,144,32,.28) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 60% at 75% 65%, rgba(237,184,85,.22) 0%, transparent 60%),
-    #FBF5E0;
-}
-
 /* Card body */
 .rcard-body {
   padding: 18px 20px 20px;
@@ -1289,7 +1279,6 @@ ul, ol { list-style: none; }
 .rtag-games { background: #FFF0EC; color: #C43F22; }
 .rtag-plans { background: #EBF6EF; color: #27623F; }
 .rtag-units { background: #F0ECFB; color: #5B3FA8; }
-.rtag-pres  { background: #FBF3DF; color: #A86C0A; }
 .rtag-topic { background: var(--bg-2); color: var(--text-2); }
 .rtag-age   { background: #EEF2F8; color: #3A5A7A; }
 
@@ -1327,7 +1316,6 @@ ul, ol { list-style: none; }
 .rcard-btn-games { background: linear-gradient(135deg, var(--coral-dark), var(--coral)); }
 .rcard-btn-plans { background: linear-gradient(135deg, var(--sage-dark),     var(--sage)); }
 .rcard-btn-units { background: linear-gradient(135deg, var(--lavender-dark), var(--lavender)); }
-.rcard-btn-pres  { background: linear-gradient(135deg, var(--amber-dark),    var(--amber)); }
 
 /* Search highlight */
 mark.search-mark {
@@ -1386,6 +1374,15 @@ mark.search-mark {
   align-items: center;
   justify-content: center;
   font-size: 5rem;
+  box-shadow: 0 12px 40px rgba(209,91,71,.25);
+  border: 4px solid rgba(255,255,255,.85);
+  animation: avatarBreathe 4.5s ease-in-out infinite;
+}
+.about-avatar-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
   box-shadow: 0 12px 40px rgba(209,91,71,.25);
   border: 4px solid rgba(255,255,255,.85);
   animation: avatarBreathe 4.5s ease-in-out infinite;
@@ -1631,4 +1628,642 @@ mark.search-mark {
   .topic-pills-wrap { gap: 6px; }
   .tpill, .pill { font-size: .78rem; padding: 5px 11px; }
   .btn-clear { margin-inline-start: 0; }
+}
+
+
+/* ══════════════════════════════════════════
+   EMBED MODAL
+══════════════════════════════════════════ */
+
+.embed-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.embed-modal[hidden] { display: none; }
+
+.embed-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .65);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.embed-modal-box {
+  position: relative;
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, .35);
+  width: min(90vw, 780px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-in .22s ease;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(.94) translateY(14px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0);    }
+}
+
+.embed-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.embed-modal-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+}
+
+.embed-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.embed-modal-close:hover { background: var(--coral); color: var(--white); }
+
+.embed-modal-frame {
+  flex: 1;
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+}
+.embed-modal-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .embed-modal { align-items: flex-end; padding: 0; }
+  .embed-modal-box {
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 88vh;
+  }
+}
+
+
+/* ══════════════════════════════════════════
+   ✦  VISUAL MAGIC — ENHANCED INTERACTIONS
+══════════════════════════════════════════ */
+
+/* ── Noise texture overlay (makes things feel organic, less AI) ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 9500;
+  mix-blend-mode: multiply;
+}
+
+/* ── Scroll progress rainbow bar ── */
+#scrollProgress {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #E85D40, #D49020, #7B5FC4, #35B5A2, #E85D40);
+  background-size: 300% 100%;
+  animation: progressRainbow 4s linear infinite;
+  z-index: 9999;
+  transition: width 60ms linear;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 10px rgba(232,93,64,.5);
+}
+@keyframes progressRainbow {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 300% 0%; }
+}
+
+/* ── Scroll to top button ── */
+#scrollTop {
+  position: fixed;
+  bottom: 28px;
+  inset-inline-end: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--coral), var(--coral-dark));
+  color: white;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(232,93,64,.4);
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: opacity 300ms ease, transform 300ms cubic-bezier(.34,1.56,.64,1), filter 150ms ease;
+  pointer-events: none;
+}
+#scrollTop.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+#scrollTop:hover { filter: brightness(1.14); transform: translateY(-4px) scale(1.08); }
+
+/* ── Cursor sparkle ── */
+.cursor-spark {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  user-select: none;
+  line-height: 1;
+  font-style: normal;
+  animation: cursorSparkFly 0.8s ease-out forwards;
+  transform-origin: center;
+}
+@keyframes cursorSparkFly {
+  0%   { opacity: 1;   transform: translate(-50%, -50%) scale(1.3) rotate(0deg); }
+  100% { opacity: 0;   transform: translate(calc(-50% + var(--dx,0px)), calc(-50% + var(--dy,-50px))) scale(0.1) rotate(120deg); }
+}
+
+/* ── Animated gradient on hero accent text ── */
+.hero-h1-accent {
+  background: linear-gradient(125deg, #E85D40, #F58B6A, #D49020, #F0C048, #7B5FC4, #35B5A2, #E85D40);
+  background-size: 400% 400%;
+  animation: heroGradient 6s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+@keyframes heroGradient {
+  0%   { background-position:   0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position:   0% 50%; }
+}
+
+/* ── Nav link magic underline ── */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  inset-inline-start: 14px;
+  inset-inline-end: 14px;
+  height: 2px;
+  background: var(--page-color);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 260ms cubic-bezier(.34,1.56,.64,1);
+}
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.active::after { display: none; }
+
+/* ── Wavy animated underline on section titles ── */
+.portals-section .sec-title {
+  position: relative;
+  display: block;
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+.portals-section .sec-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0,4 Q5,0 10,4 Q15,8 20,4 Q25,0 30,4 Q35,8 40,4' stroke='%23E85D40' stroke-width='2.2' fill='none' stroke-linecap='round' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 40px 8px;
+  background-repeat: repeat-x;
+  animation: wavyScroll 2s linear infinite;
+}
+@keyframes wavyScroll {
+  from { background-position-x: 0; }
+  to   { background-position-x: 40px; }
+}
+
+/* ── Portal card enhanced glow on hover ── */
+.portal-games:hover { box-shadow: 0 28px 65px rgba(232,93,64,.55),  0 0 0 1px rgba(232,93,64,.18) !important; }
+.portal-plans:hover { box-shadow: 0 28px 65px rgba(61,139,96,.52),  0 0 0 1px rgba(61,139,96,.15)  !important; }
+.portal-units:hover { box-shadow: 0 28px 65px rgba(123,95,196,.52), 0 0 0 1px rgba(123,95,196,.15) !important; }
+
+/* ── Resource card colored glow on hover ── */
+.rcard[data-type="משחק דיגיטלי"]:hover { box-shadow: 0 22px 55px rgba(232,93,64,.30),  0 0 0 1px rgba(232,93,64,.12) !important; }
+.rcard[data-type="מערך פעילות"]:hover  { box-shadow: 0 22px 55px rgba(61,139,96,.28),  0 0 0 1px rgba(61,139,96,.1)  !important; }
+.rcard[data-type="יחידת תוכן"]:hover   { box-shadow: 0 22px 55px rgba(123,95,196,.28), 0 0 0 1px rgba(123,95,196,.1) !important; }
+
+/* ── 3D tilt smooth transition reset ── */
+.portal-card,
+.rcard {
+  will-change: transform;
+  transform-style: preserve-3d;
+  transition: transform 350ms cubic-bezier(.34,1.56,.64,1), box-shadow 350ms ease, border-color 150ms ease;
+}
+.portal-card { transition-duration: 280ms; }
+
+/* ── Btn-primary shimmer sweep ── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%);
+  transform: translateX(-150%) skewX(-15deg);
+  animation: btnShimmer 2.8s ease-in-out 1.2s infinite;
+}
+@keyframes btnShimmer {
+  0%   { transform: translateX(-150%) skewX(-15deg); }
+  40%  { transform: translateX(250%)  skewX(-15deg); }
+  100% { transform: translateX(250%)  skewX(-15deg); }
+}
+
+/* ── Floating doodles behind hero ── */
+.hero-doodles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.doodle {
+  position: absolute;
+  font-size: 2.2rem;
+  opacity: 0.10;
+  animation: doodleDrift linear infinite;
+  user-select: none;
+  filter: blur(0.4px);
+}
+.doodle:nth-child(1) { top: 12%; left:  5%;  font-size: 2.8rem; animation-duration: 22s; animation-delay: 0s; }
+.doodle:nth-child(2) { top: 68%; left:  4%;  font-size: 1.8rem; animation-duration: 26s; animation-delay: -8s; }
+.doodle:nth-child(3) { top: 22%; right: 4%;  font-size: 2.4rem; animation-duration: 19s; animation-delay: -4s; }
+.doodle:nth-child(4) { top: 58%; right: 5%;  font-size: 2rem;   animation-duration: 28s; animation-delay: -14s; }
+.doodle:nth-child(5) { top: 82%; left: 22%;  font-size: 1.5rem; animation-duration: 20s; animation-delay: -6s; }
+.doodle:nth-child(6) { top:  6%; right: 20%; font-size: 1.7rem; animation-duration: 23s; animation-delay: -11s; }
+.doodle:nth-child(7) { top: 44%; left:  2%;  font-size: 1.6rem; animation-duration: 17s; animation-delay: -3s; }
+.doodle:nth-child(8) { top: 36%; right: 2%;  font-size: 2rem;   animation-duration: 24s; animation-delay: -17s; }
+@keyframes doodleDrift {
+  0%   { transform: translateY(0)     rotate(0deg)   scale(1); }
+  25%  { transform: translateY(-35px) rotate(12deg)  scale(1.08); }
+  50%  { transform: translateY(-20px) rotate(-8deg)  scale(0.94); }
+  75%  { transform: translateY(-30px) rotate(7deg)   scale(1.05); }
+  100% { transform: translateY(0)     rotate(0deg)   scale(1); }
+}
+
+/* ── Filter area - playful animated border ── */
+.filter-area {
+  background: linear-gradient(var(--white), var(--white)) padding-box,
+              linear-gradient(135deg, var(--page-color), var(--amber), var(--lavender), var(--page-color)) border-box;
+  border: 2px solid transparent !important;
+  animation: borderRotate 4s linear infinite;
+}
+@keyframes borderRotate {
+  0%   { background: linear-gradient(var(--white), var(--white)) padding-box, linear-gradient(0deg,   var(--page-color), var(--amber), var(--lavender)) border-box; }
+  25%  { background: linear-gradient(var(--white), var(--white)) padding-box, linear-gradient(90deg,  var(--page-color), var(--amber), var(--lavender)) border-box; }
+  50%  { background: linear-gradient(var(--white), var(--white)) padding-box, linear-gradient(180deg, var(--page-color), var(--amber), var(--lavender)) border-box; }
+  75%  { background: linear-gradient(var(--white), var(--white)) padding-box, linear-gradient(270deg, var(--page-color), var(--amber), var(--lavender)) border-box; }
+  100% { background: linear-gradient(var(--white), var(--white)) padding-box, linear-gradient(360deg, var(--page-color), var(--amber), var(--lavender)) border-box; }
+}
+
+/* ── Pill hover shimmer ── */
+.tpill, .pill { position: relative; overflow: hidden; }
+.tpill::after, .pill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.45) 50%, transparent 65%);
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: background-position 0.4s ease;
+}
+.tpill:hover::after, .pill:hover::after { background-position: 100% 0; }
+
+/* ── Hero stats — gradient border glow ── */
+.hero-stats {
+  background: rgba(255,255,255,.72) !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box;
+  box-shadow:
+    0 4px 24px rgba(40,28,14,.09),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 0 0 2px rgba(232,93,64,.15),
+    0 0 0 4px rgba(212,144,32,.10),
+    0 0 0 6px rgba(123,95,196,.08) !important;
+}
+.hstat-num {
+  font-size: 1.2rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, var(--coral), var(--amber));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── About avatar ring pulse ── */
+.about-avatar-img {
+  outline: 4px solid transparent;
+  outline-offset: 6px;
+  transition: outline-color 0.6s ease, outline-offset 0.6s ease;
+  animation: avatarBreathe 4.5s ease-in-out infinite, avatarRing 3.5s ease-in-out infinite !important;
+}
+@keyframes avatarRing {
+  0%, 100% { outline-color: rgba(232,93,64,.0);  outline-offset: 6px; }
+  50%       { outline-color: rgba(232,93,64,.4);  outline-offset: 12px; }
+}
+
+/* ── Hero — richer blob colors ── */
+.b1 { background: radial-gradient(circle, #F8907A 0%, #E85D40 50%, #C43F22 100%) !important; opacity: .40 !important; }
+.b2 { background: radial-gradient(circle, #A8D5C0 0%, #3D8B60 50%, #1E5035 100%) !important; opacity: .36 !important; }
+.b3 { background: radial-gradient(circle, #D8C0F5 0%, #7B5FC4 50%, #4A2E9C 100%) !important; opacity: .32 !important; }
+
+/* ── Page banner — extra sparkle dots ── */
+.page-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%,  rgba(255,255,255,.18) 0%, transparent 40%),
+    radial-gradient(circle at 80% 20%,  rgba(255,255,255,.18) 0%, transparent 40%),
+    radial-gradient(circle at 50% 110%, rgba(255,255,255,.12) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Home about band — extra richness ── */
+.home-about-band {
+  background:
+    radial-gradient(ellipse 70% 100% at 95% 50%, rgba(61,139,96,.14)  0%, transparent 60%),
+    radial-gradient(ellipse 60% 70%  at 5%  40%, rgba(232,93,64,.11)  0%, transparent 55%),
+    radial-gradient(ellipse 50% 60%  at 50% 0%,  rgba(123,95,196,.08) 0%, transparent 50%),
+    var(--bg-2) !important;
+}
+
+/* ── Loading state - colorful spinner ── */
+.loading-spinner {
+  border-color: var(--border);
+  border-top-color: var(--coral);
+  border-right-color: var(--lavender);
+  border-bottom-color: var(--sage);
+}
+
+/* ── Empty state bounce in ── */
+.empty-state { animation: emptyIn 0.6s cubic-bezier(.34,1.56,.64,1); }
+@keyframes emptyIn {
+  from { opacity: 0; transform: scale(.85) translateY(24px); }
+  to   { opacity: 1; transform: scale(1)  translateY(0); }
+}
+
+/* ── Card reveal — spring entrance ── */
+.rcard.reveal { transform: translateY(36px) scale(0.95); }
+.rcard.reveal.visible { transform: translateY(0) scale(1); }
+
+/* ── Contact form — glowing focus states ── */
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--page-color);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--page-color) 15%, transparent), 0 2px 12px rgba(232,93,64,.12);
+}
+
+/* ── Footer brand link hover ── */
+.ftr-nav a {
+  position: relative;
+  transition: color var(--t-fast), transform var(--t-fast);
+}
+.ftr-nav a:hover {
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+/* ── Sparkle on portal icon hover ── */
+.portal-card:hover .portal-icon {
+  animation: iconSpin 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes iconSpin {
+  0%   { transform: scale(1)    rotate(0deg); }
+  40%  { transform: scale(1.22) rotate(-12deg); }
+  70%  { transform: scale(1.18) rotate(8deg); }
+  100% { transform: scale(1.15) rotate(-5deg) translateY(-4px); }
+}
+
+
+/* ══════════════════════════════════════════
+   LIGHT PORTAL CARDS  +  VIDEO BACKGROUND
+══════════════════════════════════════════ */
+
+/* ── Sections: position context for the video ── */
+.portals-section,
+.content-section { overflow: hidden; }
+
+/* ── Background video (portals homepage + content pages) ── */
+.portals-bg-video,
+.content-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+}
+/* Section content sits above the video */
+.portals-section .container,
+.content-section .container { position: relative; z-index: 1; }
+
+/* ── Light backgrounds — games ── */
+.portal-games {
+  background: linear-gradient(145deg, #FFF8F5 0%, #FFE9DF 50%, #FFF2EC 100%) !important;
+  color: var(--text) !important;
+  border: 1.5px solid rgba(232,93,64,.20);
+  box-shadow: 0 8px 30px rgba(232,93,64,.12), 0 2px 10px rgba(232,93,64,.07);
+}
+/* ── Light backgrounds — plans ── */
+.portal-plans {
+  background: linear-gradient(145deg, #F4FAF6 0%, #D5EAE0 50%, #E8F4EC 100%) !important;
+  color: var(--text) !important;
+  border: 1.5px solid rgba(61,139,96,.20);
+  box-shadow: 0 8px 30px rgba(61,139,96,.12), 0 2px 10px rgba(61,139,96,.07);
+}
+/* ── Light backgrounds — units ── */
+.portal-units {
+  background: linear-gradient(145deg, #FAF8FF 0%, #E5D8F8 50%, #EEE8FC 100%) !important;
+  color: var(--text) !important;
+  border: 1.5px solid rgba(123,95,196,.20);
+  box-shadow: 0 8px 30px rgba(123,95,196,.12), 0 2px 10px rgba(123,95,196,.07);
+}
+
+/* ── Replace dark dot overlay with subtle dark dots on light ── */
+.portal-games::before,
+.portal-plans::before,
+.portal-units::before {
+  background:
+    radial-gradient(circle, rgba(0,0,0,.045) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(0,0,0,.025) 1px,   transparent 1px) !important;
+  background-size: 24px 24px, 12px 12px !important;
+  background-position: 0 0, 6px 6px !important;
+}
+
+/* Remove dark overlay on stack cards too */
+.portals-stack .portal-card::before,
+[dir="rtl"] .portals-stack .portal-card::before {
+  background:
+    radial-gradient(circle, rgba(0,0,0,.045) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(0,0,0,.025) 1px,   transparent 1px) !important;
+  background-size: 24px 24px, 12px 12px !important;
+  background-position: 0 0, 6px 6px !important;
+}
+
+/* ── Heading colors per card ── */
+.portal-games h3 { color: #C43F22; }
+.portal-plans h3 { color: #1E5035; }
+.portal-units h3 { color: #4A2E9C; }
+
+/* ── Body text ── */
+.portal-games p,
+.portal-plans p,
+.portal-units p  { color: rgba(40,28,14,.70); opacity: 1 !important; }
+
+/* ── Count badge ── */
+.portal-games .portal-count {
+  background: rgba(232,93,64,.13);
+  border-color: rgba(232,93,64,.30);
+  color: #C43F22;
+}
+.portal-plans .portal-count {
+  background: rgba(61,139,96,.13);
+  border-color: rgba(61,139,96,.30);
+  color: #1E5035;
+}
+.portal-units .portal-count {
+  background: rgba(123,95,196,.13);
+  border-color: rgba(123,95,196,.30);
+  color: #4A2E9C;
+}
+
+/* ── Arrow ── */
+.portal-games .portal-arrow { color: #C43F22 !important; opacity: .7; }
+.portal-plans .portal-arrow { color: #1E5035 !important; opacity: .7; }
+.portal-units .portal-arrow { color: #4A2E9C !important; opacity: .7; }
+
+/* ── Icon: softer shadow for light cards ── */
+.portal-games .portal-icon,
+.portal-plans .portal-icon,
+.portal-units .portal-icon {
+  filter: drop-shadow(0 4px 14px rgba(0,0,0,.14));
+}
+
+/* ── Hover glow adjusted for light cards ── */
+.portal-games:hover {
+  box-shadow: 0 28px 65px rgba(232,93,64,.28),  0 0 0 1.5px rgba(232,93,64,.28) !important;
+}
+.portal-plans:hover {
+  box-shadow: 0 28px 65px rgba(61,139,96,.26),  0 0 0 1.5px rgba(61,139,96,.26) !important;
+}
+.portal-units:hover {
+  box-shadow: 0 28px 65px rgba(123,95,196,.26), 0 0 0 1.5px rgba(123,95,196,.26) !important;
+}
+
+/* ── Shimmer on light cards: darker tone ── */
+.portal-games::after,
+.portal-plans::after,
+.portal-units::after {
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.55) 50%, transparent 65%);
+  background-size: 220% 100%;
+  background-position: -100% 0;
+}
+
+
+/* ══════════════════════════════════════════
+   LIGHT PAGE BANNERS  (matches portal cards)
+══════════════════════════════════════════ */
+
+/* ── Games banner (coral-light) ── */
+body[data-page="games"] .page-banner {
+  background: linear-gradient(145deg, #FFF5F1 0%, #FFE4D5 50%, #FFF0EA 100%);
+  border-bottom: 1px solid rgba(232,93,64,.14);
+}
+
+/* ── Activities banner (green-light) ── */
+body[data-page="activities"] .page-banner {
+  background: linear-gradient(145deg, #F3FAF6 0%, #D2E9DC 50%, #E6F3EB 100%);
+  border-bottom: 1px solid rgba(61,139,96,.14);
+}
+
+/* ── Units banner (purple-light) ── */
+body[data-page="units"] .page-banner {
+  background: linear-gradient(145deg, #F9F7FF 0%, #E3D5F8 50%, #EDE7FC 100%);
+  border-bottom: 1px solid rgba(123,95,196,.14);
+}
+
+/* ── Dark text on light banners ── */
+body[data-page="games"] .page-banner h1,
+body[data-page="activities"] .page-banner h1,
+body[data-page="units"] .page-banner h1 {
+  color: var(--page-color-dark);
+  text-shadow: none;
+}
+
+body[data-page="games"] .page-banner p,
+body[data-page="activities"] .page-banner p,
+body[data-page="units"] .page-banner p {
+  color: rgba(40,28,14,.66);
+}
+
+/* ── Dark icon drop-shadow on light banners ── */
+body[data-page="games"] .page-banner-icon,
+body[data-page="activities"] .page-banner-icon,
+body[data-page="units"] .page-banner-icon {
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.14));
+}
+
+/* ── Dot pattern: dark on light ── */
+body[data-page="games"] .page-banner::before,
+body[data-page="activities"] .page-banner::before,
+body[data-page="units"] .page-banner::before {
+  background:
+    radial-gradient(ellipse 70% 55% at 50% -10%, rgba(255,255,255,.6) 0%, transparent 65%),
+    radial-gradient(circle, rgba(0,0,0,.04)  1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(0,0,0,.025) 1px,   transparent 1px);
+  background-size: 100% 100%, 26px 26px, 13px 13px;
+  background-position: 0 0, 0 0, 6px 6px;
+}
+
+/* ── Remove white corner glows (don't look right on light) ── */
+body[data-page="games"] .page-banner::after,
+body[data-page="activities"] .page-banner::after,
+body[data-page="units"] .page-banner::after {
+  display: none;
 }

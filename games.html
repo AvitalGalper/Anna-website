@@ -17,10 +17,9 @@
       </a>
       <nav class="hdr-nav" aria-label="ניווט ראשי">
         <a href="index.html"         class="nav-link">בית</a>
-        <a href="games.html"         class="nav-link active">🎮 משחקים</a>
+        <a href="games.html"         class="nav-link active">🧩 משחקים</a>
         <a href="activities.html"    class="nav-link">📋 פעילויות</a>
         <a href="units.html"         class="nav-link">📚 יחידות</a>
-        <a href="presentations.html" class="nav-link">📊 מצגות</a>
         <a href="about.html"         class="nav-link">אודות</a>
       </nav>
       <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
@@ -29,10 +28,9 @@
     </div>
     <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
       <a href="index.html"         class="mobile-link">🏠 בית</a>
-      <a href="games.html"         class="mobile-link">🎮 משחקים דיגיטליים</a>
+      <a href="games.html"         class="mobile-link">🧩 משחקים דיגיטליים</a>
       <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
       <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
-      <a href="presentations.html" class="mobile-link">📊 מצגות הדרכה</a>
       <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
     </div>
   </header>
@@ -42,7 +40,7 @@
     <!-- ═══════════════ PAGE BANNER ═══════════════ -->
     <div class="page-banner" role="banner" aria-label="כותרת דף">
       <div class="page-banner-inner container">
-        <span class="page-banner-icon" aria-hidden="true">🎮</span>
+        <span class="page-banner-icon" aria-hidden="true">🧩</span>
         <h1>משחקים דיגיטליים</h1>
         <p>משחקים אינטראקטיביים ומהנים לגיל הרך — ללמוד תוך כדי משחק</p>
       </div>
@@ -55,6 +53,9 @@
 
     <!-- ═══════════════ CONTENT SECTION ═══════════════ -->
     <section class="content-section" aria-label="תכנים">
+      <video class="content-bg-video" autoplay muted loop playsinline aria-hidden="true">
+        <source src="bg-video.mp4" type="video/mp4" />
+      </video>
       <div class="container">
 
         <!-- Filter area -->
@@ -128,7 +129,6 @@
         <a href="games.html">משחקים</a>
         <a href="activities.html">פעילויות</a>
         <a href="units.html">יחידות</a>
-        <a href="presentations.html">מצגות</a>
         <a href="about.html">אודות</a>
       </nav>
     </div>
@@ -136,6 +136,20 @@
       <p>© 2026 אנה גלפר — כל הזכויות שמורות 🦋</p>
     </div>
   </footer>
+
+  <!-- ═══════════════ EMBED MODAL ═══════════════ -->
+  <div id="embedModal" class="embed-modal" role="dialog" aria-modal="true" aria-labelledby="embedModalTitle" hidden>
+    <div class="embed-modal-backdrop" id="embedModalBackdrop"></div>
+    <div class="embed-modal-box">
+      <div class="embed-modal-header">
+        <h2 class="embed-modal-title" id="embedModalTitle"></h2>
+        <button class="embed-modal-close" id="embedModalClose" aria-label="סגור">✕</button>
+      </div>
+      <div class="embed-modal-frame">
+        <iframe id="embedModalIframe" src="" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
 
   <script src="data.js"></script>
   <script src="script.js"></script>

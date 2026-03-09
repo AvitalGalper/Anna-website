@@ -6,10 +6,9 @@
 
 // ── Content type → display config ──────────────────────────────
 const TYPE_CONFIG = {
-  "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶", emoji: "🎮" },
+  "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶", emoji: "🧩" },
   "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗",  emoji: "📋" },
   "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗", emoji: "📚" },
-  "מצגת הדרכה":  { cls: "pres",  cta: "פתח מצגת ↗",  emoji: "📊" },
 };
 
 // ── Topic → icon map ────────────────────────────────────────────
@@ -151,7 +150,20 @@ function createCard(item) {
   }
 
   // CTA button
-  if (item.link) {
+  if (item.embed) {
+    // Open in-page modal
+    const btn = document.createElement("button");
+    btn.type        = "button";
+    btn.className   = `rcard-btn rcard-btn-${cfg.cls}`;
+    btn.textContent = cfg.cta;
+    btn.addEventListener("click", (e) => { e.stopPropagation(); openEmbedModal(item); });
+    body.appendChild(btn);
+
+    article.addEventListener("click",   () => openEmbedModal(item));
+    article.addEventListener("keydown", (e) => { if (e.key === "Enter") openEmbedModal(item); });
+
+  } else if (item.link) {
+    // Open in new tab
     const btn = document.createElement("a");
     btn.href        = item.link;
     btn.target      = "_blank";
@@ -270,6 +282,7 @@ function renderCards() {
   grid.innerHTML = "";
   grid.appendChild(frag);
   observeNewCards();
+  applyTiltToCards();
 }
 
 function observeNewCards() {
@@ -530,14 +543,53 @@ function initParallax() {
 // CONTACT FORM  (about.html)
 // ══════════════════════════════════════════
 
+// ══════════════════════════════════════════
+// EMBED MODAL
+// ══════════════════════════════════════════
+
+function openEmbedModal(item) {
+  const modal = document.getElementById("embedModal");
+  if (!modal) return;
+  document.getElementById("embedModalTitle").textContent = item.title;
+  document.getElementById("embedModalIframe").src = item.embed;
+  modal.hidden = false;
+  document.body.style.overflow = "hidden";
+  document.getElementById("embedModalClose").focus();
+}
+
+function closeEmbedModal() {
+  const modal = document.getElementById("embedModal");
+  if (!modal || modal.hidden) return;
+  document.getElementById("embedModalIframe").src = "";
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function initEmbedModal() {
+  const modal    = document.getElementById("embedModal");
+  if (!modal) return;
+  document.getElementById("embedModalClose")   .addEventListener("click", closeEmbedModal);
+  document.getElementById("embedModalBackdrop").addEventListener("click", closeEmbedModal);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeEmbedModal(); });
+}
+
+
+// ══════════════════════════════════════════
+// CONTACT FORM  (about.html)
+// ══════════════════════════════════════════
+
+const CONTACT_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzI3C2wQocDe8U80Z0vZ5dglq4orJ0YckiWHaxjIcLuwAh1SvT1Od1lFxJ7dypOckoD/exec";
+
 function handleSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById("submitBtn");
   if (!btn) return;
 
-  const name  = document.getElementById("contactName")?.value.trim();
-  const email = document.getElementById("contactEmail")?.value.trim();
-  const msg   = document.getElementById("contactMessage")?.value.trim();
+  const name    = document.getElementById("contactName")?.value.trim();
+  const email   = document.getElementById("contactEmail")?.value.trim();
+  const subject = document.getElementById("contactSubject")?.value.trim();
+  const msg     = document.getElementById("contactMessage")?.value.trim();
 
   if (!name || !email || !msg) {
     btn.textContent = "אנא מלאו את כל השדות הנדרשים";
@@ -548,6 +600,14 @@ function handleSubmit(e) {
     }, 2800);
     return;
   }
+
+  const formData = new URLSearchParams();
+  formData.append("name",    name);
+  formData.append("email",   email);
+  formData.append("subject", subject);
+  formData.append("message", msg);
+
+  fetch(CONTACT_SCRIPT_URL, { method: "POST", mode: "no-cors", body: formData });
 
   btn.textContent = "✓ ההודעה נשלחה! תודה";
   btn.style.background = "#3D8B60";
@@ -575,10 +635,135 @@ function initHomeCounts() {
 
 
 // ══════════════════════════════════════════
+// SCROLL PROGRESS BAR
+// ══════════════════════════════════════════
+
+function initScrollProgress() {
+  const bar = document.createElement("div");
+  bar.id = "scrollProgress";
+  document.body.prepend(bar);
+  window.addEventListener("scroll", () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + "%";
+  }, { passive: true });
+}
+
+
+// ══════════════════════════════════════════
+// SCROLL TO TOP BUTTON
+// ══════════════════════════════════════════
+
+function initScrollTop() {
+  const btn = document.createElement("button");
+  btn.id = "scrollTop";
+  btn.setAttribute("aria-label", "חזרה לראש הדף");
+  btn.textContent = "↑";
+  document.body.appendChild(btn);
+  window.addEventListener("scroll", () => {
+    btn.classList.toggle("visible", window.scrollY > 440);
+  }, { passive: true });
+  btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+}
+
+
+// ══════════════════════════════════════════
+// CURSOR SPARKLE TRAIL
+// ══════════════════════════════════════════
+
+function initCursorSparkles() {
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+  const colors = ["#E85D40","#D49020","#7B5FC4","#3D8B60","#35B5A2","#F07850","#A892E0"];
+  const shapes = ["✦","✧","★","◆","•","✿","❋","✺"];
+  let lastTime = 0;
+
+  document.addEventListener("mousemove", (e) => {
+    const now = Date.now();
+    if (now - lastTime < 48) return;
+    lastTime = now;
+    if (Math.random() > 0.55) return;
+
+    const s = document.createElement("span");
+    s.className = "cursor-spark";
+    s.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+    s.style.left = e.clientX + "px";
+    s.style.top  = e.clientY + "px";
+    s.style.color = colors[Math.floor(Math.random() * colors.length)];
+    s.style.fontSize = (Math.random() * 13 + 7) + "px";
+    s.style.setProperty("--dx", (Math.random() - 0.5) * 90 + "px");
+    s.style.setProperty("--dy", -(Math.random() * 90 + 28) + "px");
+    document.body.appendChild(s);
+    s.addEventListener("animationend", () => s.remove(), { once: true });
+  });
+}
+
+
+// ══════════════════════════════════════════
+// 3D CARD TILT
+// ══════════════════════════════════════════
+
+function applyTilt(el, intensity) {
+  el.addEventListener("mousemove", (e) => {
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width  - 0.5) * intensity;
+    const y = ((e.clientY - r.top)  / r.height - 0.5) * -intensity;
+    el.style.transform = `perspective(700px) rotateX(${y}deg) rotateY(${x}deg) translateY(-10px) scale(1.025)`;
+  });
+  el.addEventListener("mouseleave", () => { el.style.transform = ""; });
+}
+
+function initCardTilt() {
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+  document.querySelectorAll(".portal-card").forEach(c => applyTilt(c, 12));
+}
+
+function applyTiltToCards() {
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+  document.querySelectorAll(".rcard:not([data-tilt])").forEach(c => {
+    c.setAttribute("data-tilt", "1");
+    applyTilt(c, 7);
+  });
+}
+
+
+// ══════════════════════════════════════════
+// COUNTER ANIMATION  (hero stats)
+// ══════════════════════════════════════════
+
+function initCounterAnimation() {
+  const els = document.querySelectorAll(".hstat-num");
+  if (!els.length) return;
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      obs.unobserve(en.target);
+      const el  = en.target;
+      const raw = el.textContent;
+      const num = parseInt(raw);
+      if (isNaN(num) || num <= 2) return;
+      const suffix = raw.replace(/[0-9]/g, "");
+      let cur = 0;
+      const step = Math.max(14, Math.floor(1100 / num));
+      const timer = setInterval(() => {
+        cur++;
+        el.textContent = cur + suffix;
+        if (cur >= num) clearInterval(timer);
+      }, step);
+    });
+  }, { threshold: 0.6 });
+
+  els.forEach(el => obs.observe(el));
+}
+
+
+// ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
 
 document.addEventListener("DOMContentLoaded", async () => {
+  initScrollProgress();
+  initScrollTop();
+  initCursorSparkles();
   initMobileMenu();
   initScrollReveal();
   initHeaderScroll();
@@ -592,6 +777,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     initSearch();
     initTopicFilters();
     initAgeFilters();
+    initEmbedModal();
+    initCardTilt();
   }
 
   // ── Homepage: item counts on portal cards ──
@@ -599,5 +786,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     allResources = await loadContentData();
     initHomeCounts();
     initParallax();
+    initCardTilt();
+    initCounterAnimation();
   }
 });

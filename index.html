@@ -16,24 +16,22 @@
         <img src="logo.png" alt="אנה גלפר" class="hdr-logo" />
       </a>
       <nav class="hdr-nav" aria-label="ניווט ראשי">
-        <a href="index.html"         class="nav-link active">בית</a>
-        <a href="games.html"         class="nav-link">🎮 משחקים</a>
-        <a href="activities.html"    class="nav-link">📋 פעילויות</a>
-        <a href="units.html"         class="nav-link">📚 יחידות</a>
-        <a href="presentations.html" class="nav-link">📊 מצגות</a>
-        <a href="about.html"         class="nav-link">אודות</a>
+        <a href="index.html"      class="nav-link active">בית</a>
+        <a href="games.html"      class="nav-link">🧩 משחקים</a>
+        <a href="activities.html" class="nav-link">📋 פעילויות</a>
+        <a href="units.html"      class="nav-link">📚 יחידות</a>
+        <a href="about.html"      class="nav-link">אודות</a>
       </nav>
       <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
-      <a href="index.html"         class="mobile-link">🏠 בית</a>
-      <a href="games.html"         class="mobile-link">🎮 משחקים דיגיטליים</a>
-      <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
-      <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
-      <a href="presentations.html" class="mobile-link">📊 מצגות הדרכה</a>
-      <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
+      <a href="index.html"      class="mobile-link">🏠 בית</a>
+      <a href="games.html"      class="mobile-link">🧩 משחקים דיגיטליים</a>
+      <a href="activities.html" class="mobile-link">📋 מערכי פעילות</a>
+      <a href="units.html"      class="mobile-link">📚 יחידות תוכן</a>
+      <a href="about.html"      class="mobile-link">👩‍🏫 אודות אנה</a>
     </div>
   </header>
 
@@ -48,6 +46,18 @@
         <div class="blob b2"></div>
         <div class="blob b3"></div>
         <div class="blob b4"></div>
+      </div>
+
+      <!-- Floating educational doodles -->
+      <div class="hero-doodles" aria-hidden="true">
+        <span class="doodle">🎨</span>
+        <span class="doodle">📚</span>
+        <span class="doodle">🌟</span>
+        <span class="doodle">🔢</span>
+        <span class="doodle">🌈</span>
+        <span class="doodle">🎭</span>
+        <span class="doodle">🌿</span>
+        <span class="doodle">🔤</span>
       </div>
 
       <!-- Scattered sparkles -->
@@ -86,7 +96,7 @@
         </h1>
 
         <p class="hero-p reveal delay-3">
-          משחקים, פעילויות, יחידות תוכן ומצגות — לגיל 3–6
+          משחקים, פעילויות ויחידות תוכן — לגיל 3–6
         </p>
 
         <div class="hero-btns reveal delay-3">
@@ -96,7 +106,7 @@
 
         <div class="hero-stats reveal delay-4" aria-label="סיכום תכנים">
           <div class="hstat">
-            <span class="hstat-num">4</span>
+            <span class="hstat-num">3</span>
             <span class="hstat-lbl">סוגי תוכן</span>
           </div>
           <div class="hstat-sep" aria-hidden="true"></div>
@@ -122,14 +132,20 @@
 
     <!-- ═══════════════ PORTALS ═══════════════ -->
     <section class="portals-section" id="portals" aria-label="עולמות התוכן">
+
+      <!-- רקע וידאו שקוף — הניחו קובץ bg-video.mp4 בתיקיית האתר -->
+      <video class="portals-bg-video" autoplay muted loop playsinline aria-hidden="true">
+        <source src="bg-video.mp4" type="video/mp4" />
+      </video>
+
       <div class="container">
         <span class="sec-eyebrow reveal">בחרו את הדרך שלכם</span>
-        <span class="sec-title reveal delay-1">גלו את ארבעת עולמות התוכן</span>
+        <span class="sec-title reveal delay-1">גלו את שלושת עולמות התוכן</span>
 
         <div class="portals-bento reveal delay-2">
           <!-- XL featured card: games -->
           <a href="games.html" class="portal-card portal-xl portal-games" aria-label="משחקים דיגיטליים">
-            <span class="portal-icon" aria-hidden="true">🎮</span>
+            <span class="portal-icon" aria-hidden="true">🧩</span>
             <h3>משחקים דיגיטליים</h3>
             <p>משחקים אינטראקטיביים ומהנים — ללמוד תוך כדי משחק</p>
             <span class="portal-count" data-count-type="משחק דיגיטלי" aria-live="polite"></span>
@@ -158,15 +174,6 @@
               <span class="portal-arrow" aria-hidden="true">←</span>
             </a>
 
-            <a href="presentations.html" class="portal-card portal-pres" aria-label="מצגות הדרכה">
-              <span class="portal-icon" aria-hidden="true">📊</span>
-              <div>
-                <h3>מצגות הדרכה</h3>
-                <p>מצגות מקצועיות לגננות ולהורים</p>
-                <span class="portal-count" data-count-type="מצגת הדרכה" aria-live="polite"></span>
-              </div>
-              <span class="portal-arrow" aria-hidden="true">←</span>
-            </a>
           </div>
         </div>
       </div>
@@ -208,7 +215,6 @@
         <a href="games.html">משחקים</a>
         <a href="activities.html">פעילויות</a>
         <a href="units.html">יחידות</a>
-        <a href="presentations.html">מצגות</a>
         <a href="about.html">אודות</a>
       </nav>
     </div>

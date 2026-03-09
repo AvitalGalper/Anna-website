@@ -1,36 +1,52 @@
 // ══════════════════════════════════════════════════════════════
 // script.js — Anna Galper | Multi-page logic
-// Data lives in data.js (CONTENT_DATA global object).
+// Content is loaded asynchronously from Google Sheets via data.js.
 // ══════════════════════════════════════════════════════════════
 
+
+// ── Content type → display config ──────────────────────────────
 const TYPE_CONFIG = {
-  "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶" },
-  "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗"  },
-  "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗" },
-  "מצגת הדרכה":  { cls: "pres",  cta: "פתח מצגת ↗"  }
+  "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶", emoji: "🎮" },
+  "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗",  emoji: "📋" },
+  "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗", emoji: "📚" },
+  "מצגת הדרכה":  { cls: "pres",  cta: "פתח מצגת ↗",  emoji: "📊" },
 };
 
-// ── Build flat resources array from data.js ──
-let allResources = [];
-if (typeof CONTENT_DATA !== "undefined") {
-  Object.entries(CONTENT_DATA).forEach(([type, items]) => {
-    if (Array.isArray(items)) {
-      items.forEach(item => allResources.push({ ...item, type }));
-    }
-  });
-}
+// ── Topic → icon map ────────────────────────────────────────────
+// Add new topics here as needed; unknown topics get no icon.
+const TOPIC_ICONS = {
+  "חגים":        "🕎",
+  "פורים":       "🎭",
+  "פסח":         "🍷",
+  "חנוכה":       "🕎",
+  "ראש השנה":   "🍎",
+  "סוכות":      "🌿",
+  "שבועות":     "🌸",
+  "עונות השנה": "🍂",
+  "צבעים":      "🌈",
+  "מספרים":     "🔢",
+  "אותיות":     "🔤",
+  "רגשות":      "😊",
+  "חיות":       "🐾",
+  "צורות":      "🔷",
+};
 
-// ── Current page type (null on home / about) ──
+// ── All loaded items (populated async from Google Sheets) ───────
+let allResources = [];
+
+// ── Current page's content type (null on home / about) ─────────
 const PAGE_TYPE = document.body.dataset.pageType || null;
 
-// ── Filter state ──
+// ── Active filter state ─────────────────────────────────────────
 let activeTopic = "all";
 let activeAge   = "all";
 let searchQuery = "";
 
+
 // ══════════════════════════════════════════
 // HELPERS
 // ══════════════════════════════════════════
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -49,11 +65,28 @@ function highlightMatch(text, query) {
   );
 }
 
+
+// ══════════════════════════════════════════
+// LOADING STATE
+// ══════════════════════════════════════════
+
+function showLoadingState() {
+  const grid = document.getElementById("cardsGrid");
+  if (!grid) return;
+  grid.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <p>טוענים תכנים...</p>
+    </div>`;
+}
+
+
 // ══════════════════════════════════════════
 // CREATE CARD
 // ══════════════════════════════════════════
+
 function createCard(item) {
-  const cfg = TYPE_CONFIG[item.type] || { cls: "games", cta: "פתח ↗" };
+  const cfg = TYPE_CONFIG[item.type] || { cls: "games", cta: "פתח ↗", emoji: "📄" };
 
   const article = document.createElement("article");
   article.className = "rcard";
@@ -65,14 +98,15 @@ function createCard(item) {
   thumb.className = "rcard-thumb";
   if (item.image) {
     const img = document.createElement("img");
-    img.src = item.image;
-    img.alt = item.title;
+    img.src     = item.image;
+    img.alt     = item.title;
     img.loading = "lazy";
     thumb.appendChild(img);
   } else {
     const emo = document.createElement("span");
-    emo.className = "rcard-emoji";
-    emo.textContent = item.emoji || "📄";
+    emo.className   = "rcard-emoji";
+    // Use item emoji → type default → generic fallback
+    emo.textContent = item.emoji || cfg.emoji || "📄";
     thumb.appendChild(emo);
   }
   article.appendChild(thumb);
@@ -86,19 +120,19 @@ function createCard(item) {
   tags.className = "rcard-tags";
 
   const typeTag = document.createElement("span");
-  typeTag.className = `rtag rtag-${cfg.cls}`;
+  typeTag.className   = `rtag rtag-${cfg.cls}`;
   typeTag.textContent = item.type;
   tags.appendChild(typeTag);
 
   if (item.topic) {
     const tTag = document.createElement("span");
-    tTag.className = "rtag rtag-topic";
+    tTag.className   = "rtag rtag-topic";
     tTag.textContent = item.topic;
     tags.appendChild(tTag);
   }
   if (item.age && item.age.length) {
     const aTag = document.createElement("span");
-    aTag.className = "rtag rtag-age";
+    aTag.className   = "rtag rtag-age";
     aTag.textContent = "גיל " + item.age.join(", ");
     tags.appendChild(aTag);
   }
@@ -109,18 +143,20 @@ function createCard(item) {
   h3.innerHTML = highlightMatch(item.title, searchQuery);
   body.appendChild(h3);
 
-  // Description
-  const desc = document.createElement("p");
-  desc.innerHTML = highlightMatch(item.description || "", searchQuery);
-  body.appendChild(desc);
+  // Description (optional column in the sheet)
+  if (item.description) {
+    const desc = document.createElement("p");
+    desc.innerHTML = highlightMatch(item.description, searchQuery);
+    body.appendChild(desc);
+  }
 
   // CTA button
   if (item.link) {
     const btn = document.createElement("a");
-    btn.href = item.link;
-    btn.target = "_blank";
-    btn.rel = "noopener noreferrer";
-    btn.className = `rcard-btn rcard-btn-${cfg.cls}`;
+    btn.href        = item.link;
+    btn.target      = "_blank";
+    btn.rel         = "noopener noreferrer";
+    btn.className   = `rcard-btn rcard-btn-${cfg.cls}`;
     btn.textContent = cfg.cta;
     body.appendChild(btn);
 
@@ -136,23 +172,22 @@ function createCard(item) {
   return article;
 }
 
+
 // ══════════════════════════════════════════
-// RENDER CARDS
+// RENDER CARDS  (with sort + grouped support)
 // ══════════════════════════════════════════
+
 function renderCards() {
   const grid = document.getElementById("cardsGrid");
   if (!grid) return;
 
+  // ── Filter ────────────────────────────────────────────────────
   const filtered = allResources.filter(item => {
-    // Filter by page type
     if (PAGE_TYPE && item.type !== PAGE_TYPE) return false;
-    // Filter by topic
     if (activeTopic !== "all" && item.topic !== activeTopic) return false;
-    // Filter by age
-    if (activeAge !== "all" && !(item.age || []).includes(activeAge)) return false;
-    // Filter by search
+    if (activeAge   !== "all" && !item.age.includes(activeAge)) return false;
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+      const q       = searchQuery.toLowerCase();
       const inTitle = item.title.toLowerCase().includes(q);
       const inDesc  = (item.description || "").toLowerCase().includes(q);
       if (!inTitle && !inDesc) return false;
@@ -160,32 +195,145 @@ function renderCards() {
     return true;
   });
 
-  // Update results count
-  const count = document.getElementById("resultsCount");
-  if (count) {
-    count.textContent = filtered.length
+  // ── Sort by `order` column (ascending) ───────────────────────
+  filtered.sort((a, b) => a.order - b.order);
+
+  // ── Update results count ──────────────────────────────────────
+  const countEl = document.getElementById("resultsCount");
+  if (countEl) {
+    countEl.textContent = filtered.length
       ? `נמצאו ${filtered.length} תכנים`
       : "";
   }
 
-  // Build DOM
+  // ── Build DOM ─────────────────────────────────────────────────
   const frag = document.createDocumentFragment();
+
   if (!filtered.length) {
+    // ── Empty state ──
     const empty = document.createElement("div");
     empty.className = "empty-state";
     empty.innerHTML = `<span class="es-icon">🔍</span><p>לא נמצאו תכנים. נסו לשנות את הסינון.</p>`;
     frag.appendChild(empty);
+
+  } else if (activeTopic !== "all" && filtered.some(item => item.group)) {
+    // ── Grouped layout ──────────────────────────────────────────
+    // Used when a specific topic is selected AND items have group values
+    // (e.g. פורים grouped by יום ראשון, יום שני, etc.)
+    // Groups appear in the order they are first encountered after sorting.
+
+    const groupMap = new Map(); // Map preserves insertion order
+    filtered.forEach(item => {
+      const key = item.group || "כללי";
+      if (!groupMap.has(key)) groupMap.set(key, []);
+      groupMap.get(key).push(item);
+    });
+
+    groupMap.forEach((groupItems, groupName) => {
+      const section = document.createElement("div");
+      section.className = "cards-group";
+
+      const heading = document.createElement("h3");
+      heading.className   = "cards-group-heading";
+      heading.textContent = groupName;
+      section.appendChild(heading);
+
+      const inner = document.createElement("div");
+      inner.className = "cards-group-grid";
+
+      groupItems.forEach((item, idx) => {
+        const card = createCard(item);
+        card.classList.add("reveal");
+        card.style.transitionDelay = Math.min(idx * 55, 440) + "ms";
+        inner.appendChild(card);
+      });
+
+      section.appendChild(inner);
+      frag.appendChild(section);
+    });
+
   } else {
-    filtered.forEach(item => frag.appendChild(createCard(item)));
+    // ── Flat layout (default) ────────────────────────────────────
+    const inner = document.createElement("div");
+    inner.className = "cards-group-grid";
+
+    filtered.forEach((item, idx) => {
+      const card = createCard(item);
+      card.classList.add("reveal");
+      card.style.transitionDelay = Math.min(idx * 50, 500) + "ms";
+      inner.appendChild(card);
+    });
+
+    frag.appendChild(inner);
   }
 
   grid.innerHTML = "";
   grid.appendChild(frag);
+  observeNewCards();
 }
+
+function observeNewCards() {
+  if (!("IntersectionObserver" in window)) {
+    document.querySelectorAll(".rcard.reveal").forEach(el => el.classList.add("visible"));
+    return;
+  }
+  const obs = new IntersectionObserver(
+    entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); }
+    }),
+    { threshold: 0.06 }
+  );
+  document.querySelectorAll(".rcard.reveal:not(.visible)").forEach(el => obs.observe(el));
+}
+
+
+// ══════════════════════════════════════════
+// TOPIC PILLS  (generated dynamically from sheet data)
+// ══════════════════════════════════════════
+
+function initTopicPillsFromData() {
+  const wrap = document.getElementById("topicFilters");
+  if (!wrap) return;
+
+  // Collect unique topics for this page's content type,
+  // in the order they first appear (respects sheet ordering).
+  const seen   = new Set();
+  const topics = [];
+  allResources.forEach(item => {
+    if (PAGE_TYPE && item.type !== PAGE_TYPE) return;
+    if (item.topic && !seen.has(item.topic)) {
+      seen.add(item.topic);
+      topics.push(item.topic);
+    }
+  });
+
+  if (!topics.length) return;
+
+  // Keep the "הכל" button; replace everything else
+  const allBtn = wrap.querySelector("[data-topic='all']");
+  wrap.innerHTML = "";
+  if (allBtn) {
+    allBtn.classList.add("active");
+    allBtn.setAttribute("aria-pressed", "true");
+    wrap.appendChild(allBtn);
+  }
+
+  topics.forEach(topic => {
+    const btn = document.createElement("button");
+    btn.className       = "tpill";
+    btn.dataset.topic   = topic;
+    btn.setAttribute("aria-pressed", "false");
+    const icon = TOPIC_ICONS[topic] ? TOPIC_ICONS[topic] + " " : "";
+    btn.textContent = icon + topic;
+    wrap.appendChild(btn);
+  });
+}
+
 
 // ══════════════════════════════════════════
 // SEARCH
 // ══════════════════════════════════════════
+
 function initSearch() {
   const input = document.getElementById("searchInput");
   const clear = document.getElementById("searchClear");
@@ -208,9 +356,11 @@ function initSearch() {
   }
 }
 
+
 // ══════════════════════════════════════════
 // TOPIC FILTER  (class="tpill", data-topic)
 // ══════════════════════════════════════════
+
 function initTopicFilters() {
   const wrap = document.getElementById("topicFilters");
   if (!wrap) return;
@@ -228,9 +378,11 @@ function initTopicFilters() {
   });
 }
 
+
 // ══════════════════════════════════════════
 // AGE FILTER  (class="pill", data-age)
 // ══════════════════════════════════════════
+
 function initAgeFilters() {
   const wrap = document.getElementById("ageFilters");
   if (!wrap) return;
@@ -248,9 +400,11 @@ function initAgeFilters() {
   });
 }
 
+
 // ══════════════════════════════════════════
-// CLEAR ALL FILTERS
+// CLEAR ALL FILTERS  (called from HTML onclick)
 // ══════════════════════════════════════════
+
 function clearFilters() {
   activeTopic = "all";
   activeAge   = "all";
@@ -275,9 +429,11 @@ function clearFilters() {
   renderCards();
 }
 
+
 // ══════════════════════════════════════════
 // MOBILE MENU
 // ══════════════════════════════════════════
+
 function initMobileMenu() {
   const burger = document.getElementById("burgerBtn");
   const menu   = document.getElementById("mobileMenu");
@@ -310,9 +466,11 @@ function initMobileMenu() {
   });
 }
 
+
 // ══════════════════════════════════════════
 // SCROLL REVEAL
 // ══════════════════════════════════════════
+
 function initScrollReveal() {
   const items = document.querySelectorAll(".reveal");
   if (!items.length) return;
@@ -334,9 +492,11 @@ function initScrollReveal() {
   items.forEach(el => obs.observe(el));
 }
 
+
 // ══════════════════════════════════════════
 // HEADER SCROLL SHADOW
 // ══════════════════════════════════════════
+
 function initHeaderScroll() {
   const hdr = document.getElementById("siteHeader");
   if (!hdr) return;
@@ -345,9 +505,31 @@ function initHeaderScroll() {
   update();
 }
 
+
 // ══════════════════════════════════════════
-// CONTACT FORM
+// PARALLAX  (homepage hero blobs)
 // ══════════════════════════════════════════
+
+function initParallax() {
+  const heroDeco = document.querySelector(".hero-deco");
+  if (!heroDeco) return;
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        heroDeco.style.transform = `translateY(${Math.max(0, window.scrollY) * 0.22}px)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+
+// ══════════════════════════════════════════
+// CONTACT FORM  (about.html)
+// ══════════════════════════════════════════
+
 function handleSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById("submitBtn");
@@ -368,7 +550,7 @@ function handleSubmit(e) {
   }
 
   btn.textContent = "✓ ההודעה נשלחה! תודה";
-  btn.style.background = "#457A5A";
+  btn.style.background = "#3D8B60";
   btn.disabled = true;
   setTimeout(() => {
     btn.textContent = "שלחו הודעה ✉";
@@ -378,36 +560,44 @@ function handleSubmit(e) {
   }, 3500);
 }
 
+
 // ══════════════════════════════════════════
 // HOMEPAGE: item counts on portal cards
 // ══════════════════════════════════════════
+
 function initHomeCounts() {
-  if (typeof CONTENT_DATA === "undefined") return;
   document.querySelectorAll("[data-count-type]").forEach(el => {
     const type  = el.dataset.countType;
-    const count = Array.isArray(CONTENT_DATA[type]) ? CONTENT_DATA[type].length : 0;
-    el.textContent = count + " תכנים";
+    const count = allResources.filter(item => item.type === type).length;
+    el.textContent = count ? `${count} תכנים` : "";
   });
 }
+
 
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
-document.addEventListener("DOMContentLoaded", () => {
+
+document.addEventListener("DOMContentLoaded", async () => {
   initMobileMenu();
   initScrollReveal();
   initHeaderScroll();
 
-  // Content pages only
+  // ── Content pages (games, activities, units, presentations) ──
   if (document.getElementById("cardsGrid")) {
-    renderCards();
+    showLoadingState();                      // show spinner right away
+    allResources = await loadContentData();  // fetch from Google Sheets
+    initTopicPillsFromData();               // build topic pills from loaded data
+    renderCards();                           // render cards (sorted, possibly grouped)
     initSearch();
     initTopicFilters();
     initAgeFilters();
   }
 
-  // Homepage only
+  // ── Homepage: item counts on portal cards ──
   if (document.body.dataset.page === "home") {
+    allResources = await loadContentData();
     initHomeCounts();
+    initParallax();
   }
 });

@@ -17,9 +17,9 @@
       </a>
       <nav class="hdr-nav" aria-label="ניווט ראשי">
         <a href="index.html"         class="nav-link">בית</a>
-        <a href="games.html"         class="nav-link active">🧩 משחקים</a>
-        <a href="activities.html"    class="nav-link">📋 פעילויות</a>
-        <a href="units.html"         class="nav-link">📚 יחידות</a>
+        <a href="games.html"         class="nav-link active">משחקים</a>
+        <a href="activities.html"    class="nav-link">פעילויות</a>
+        <a href="units.html"         class="nav-link">יחידות</a>
         <a href="about.html"         class="nav-link">אודות</a>
       </nav>
       <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
@@ -87,15 +87,11 @@
             <button class="tpill"        data-topic="צורות"      aria-pressed="false">🔷 צורות</button>
           </div>
 
-          <!-- Age + clear -->
+          <!-- Group sub-filter (shown dynamically) -->
+          <div class="group-pills-wrap" id="groupFilters" role="group" aria-label="סינון לפי תת-נושא" hidden></div>
+
+          <!-- Clear filters -->
           <div class="filter-row">
-            <span class="filter-row-label">גיל:</span>
-            <div class="pills" id="ageFilters" role="group" aria-label="סינון לפי גיל">
-              <button class="pill active" data-age="all" aria-pressed="true">הכל</button>
-              <button class="pill"        data-age="3-4" aria-pressed="false">גיל 3–4</button>
-              <button class="pill"        data-age="4-5" aria-pressed="false">גיל 4–5</button>
-              <button class="pill"        data-age="5-6" aria-pressed="false">גיל 5–6</button>
-            </div>
             <button class="btn-clear" onclick="clearFilters()" aria-label="נקה את כל הסינונים">✕ נקה סינון</button>
           </div>
 
@@ -124,13 +120,6 @@
         <img src="logo.png" alt="אנה גלפר" class="ftr-logo" />
         <p>מרחב למידה דיגיטלי לגיל הרך<br />לגננות, הורים וילדים בגיל 3–6</p>
       </div>
-      <nav class="ftr-nav" aria-label="ניווט תחתון">
-        <a href="index.html">בית</a>
-        <a href="games.html">משחקים</a>
-        <a href="activities.html">פעילויות</a>
-        <a href="units.html">יחידות</a>
-        <a href="about.html">אודות</a>
-      </nav>
     </div>
     <div class="container ftr-copy">
       <p>© 2026 אנה גלפר — כל הזכויות שמורות 🦋</p>

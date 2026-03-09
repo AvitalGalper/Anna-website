@@ -37,9 +37,10 @@ let allResources = [];
 const PAGE_TYPE = document.body.dataset.pageType || null;
 
 // ── Active filter state ─────────────────────────────────────────
-let activeTopic = "all";
-let activeAge   = "all";
-let searchQuery = "";
+let activeTopic  = "all";
+let activeAge    = "all";
+let activeGroup  = "all";
+let searchQuery  = "";
 
 
 // ══════════════════════════════════════════
@@ -129,12 +130,6 @@ function createCard(item) {
     tTag.textContent = item.topic;
     tags.appendChild(tTag);
   }
-  if (item.age && item.age.length) {
-    const aTag = document.createElement("span");
-    aTag.className   = "rtag rtag-age";
-    aTag.textContent = "גיל " + item.age.join(", ");
-    tags.appendChild(aTag);
-  }
   body.appendChild(tags);
 
   // Title
@@ -198,6 +193,7 @@ function renderCards() {
     if (PAGE_TYPE && item.type !== PAGE_TYPE) return false;
     if (activeTopic !== "all" && item.topic !== activeTopic) return false;
     if (activeAge   !== "all" && !item.age.includes(activeAge)) return false;
+    if (activeGroup !== "all" && (item.group || "") !== activeGroup) return false;
     if (searchQuery) {
       const q       = searchQuery.toLowerCase();
       const inTitle = item.title.toLowerCase().includes(q);
@@ -382,13 +378,78 @@ function initTopicFilters() {
     const btn = e.target.closest("[data-topic]");
     if (!btn) return;
     activeTopic = btn.dataset.topic;
+    activeGroup = "all";
     wrap.querySelectorAll("[data-topic]").forEach(b => {
       const isActive = b === btn;
       b.classList.toggle("active", isActive);
       b.setAttribute("aria-pressed", String(isActive));
     });
+    updateGroupFilters();
     renderCards();
   });
+}
+
+
+// ══════════════════════════════════════════
+// GROUP SUB-FILTER  (shown after topic selection)
+// ══════════════════════════════════════════
+
+function updateGroupFilters() {
+  const wrap = document.getElementById("groupFilters");
+  if (!wrap) return;
+
+  // Collect unique non-empty groups for the active topic + page type
+  const seen   = new Set();
+  const groups = [];
+  allResources.forEach(item => {
+    if (PAGE_TYPE && item.type !== PAGE_TYPE) return;
+    if (activeTopic !== "all" && item.topic !== activeTopic) return;
+    if (item.group && !seen.has(item.group)) {
+      seen.add(item.group);
+      groups.push(item.group);
+    }
+  });
+
+  // Hide if no groups or no topic selected
+  if (!groups.length || activeTopic === "all") {
+    wrap.hidden = true;
+    wrap.innerHTML = "";
+    return;
+  }
+
+  // Build group pills
+  wrap.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.className = "gpill active";
+  allBtn.dataset.group = "all";
+  allBtn.setAttribute("aria-pressed", "true");
+  allBtn.textContent = "הכל";
+  wrap.appendChild(allBtn);
+
+  groups.forEach(group => {
+    const btn = document.createElement("button");
+    btn.className = "gpill";
+    btn.dataset.group = group;
+    btn.setAttribute("aria-pressed", "false");
+    btn.textContent = group;
+    wrap.appendChild(btn);
+  });
+
+  wrap.hidden = false;
+
+  // Click handler
+  wrap.onclick = e => {
+    const btn = e.target.closest("[data-group]");
+    if (!btn) return;
+    activeGroup = btn.dataset.group;
+    wrap.querySelectorAll("[data-group]").forEach(b => {
+      const isActive = b === btn;
+      b.classList.toggle("active", isActive);
+      b.setAttribute("aria-pressed", String(isActive));
+    });
+    renderCards();
+  };
 }
 
 
@@ -421,6 +482,7 @@ function initAgeFilters() {
 function clearFilters() {
   activeTopic = "all";
   activeAge   = "all";
+  activeGroup = "all";
   searchQuery = "";
 
   const si = document.getElementById("searchInput");
@@ -438,6 +500,9 @@ function clearFilters() {
     b.classList.toggle("active", isAll);
     b.setAttribute("aria-pressed", String(isAll));
   });
+
+  const gw = document.getElementById("groupFilters");
+  if (gw) { gw.hidden = true; gw.innerHTML = ""; }
 
   renderCards();
 }

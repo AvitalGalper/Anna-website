@@ -134,37 +134,32 @@ ul, ol { list-style: none; }
   top: 0;
   inset-inline: 0;
   height: var(--hdr-h);
-  background: rgba(249,246,239,.92);
+  background: rgba(255,254,251,.95);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid transparent;
+  border-bottom: 2px solid transparent;
   z-index: 900;
   transition: background var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
 }
 .site-header.scrolled {
-  background: rgba(249,246,239,.98);
-  border-bottom-color: var(--border);
+  background: rgba(255,254,251,.99);
+  border-bottom-color: var(--page-color);
   box-shadow: var(--shadow-sm);
 }
 
 .hdr-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 100%;
   gap: 16px;
 }
 
-/* Brand */
-.hdr-brand-link { display: flex; align-items: center; flex-shrink: 0; }
+/* Nav first (right side in RTL), logo pushed to far left */
+.hdr-nav   { order: 1; display: flex; align-items: center; gap: 4px; }
+.hdr-brand-link { order: 2; display: flex; align-items: center; flex-shrink: 0; margin-inline-start: auto; }
+.hdr-burger { order: 3; }
 .hdr-logo { height: 44px; width: auto; object-fit: contain; }
-
-/* Desktop nav */
-.hdr-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
 
 .nav-link {
   display: inline-flex;
@@ -248,9 +243,10 @@ ul, ol { list-style: none; }
    5. FOOTER
 ══════════════════════════════════════════ */
 .site-footer {
-  background: #1E120A;
-  color: rgba(255,255,255,.75);
+  background: var(--white);
+  color: var(--text-2);
   margin-top: auto;
+  border-top: 2px solid var(--border);
 }
 
 .ftr-wave {
@@ -270,7 +266,7 @@ ul, ol { list-style: none; }
 
 .ftr-brand { max-width: 290px; }
 .ftr-logo  { height: 40px; width: auto; margin-bottom: 12px; opacity: .85; }
-.ftr-brand p { font-size: .88rem; line-height: 1.7; color: rgba(255,255,255,.6); }
+.ftr-brand p { font-size: .88rem; line-height: 1.7; color: var(--text-3); }
 
 .ftr-nav {
   display: flex;
@@ -280,17 +276,17 @@ ul, ol { list-style: none; }
 }
 .ftr-nav a {
   font-size: .9rem;
-  color: rgba(255,255,255,.7);
+  color: var(--text-2);
   transition: color var(--t-fast);
 }
-.ftr-nav a:hover { color: var(--white); }
+.ftr-nav a:hover { color: var(--page-color); }
 
 .ftr-copy {
-  border-top: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid var(--border);
   padding-block: 18px;
   text-align: center;
 }
-.ftr-copy p { font-size: .82rem; color: rgba(255,255,255,.4); }
+.ftr-copy p { font-size: .82rem; color: var(--text-3); }
 
 /* ══════════════════════════════════════════
    6. HERO  (homepage only)
@@ -1043,6 +1039,47 @@ ul, ol { list-style: none; }
   font-weight: 600;
 }
 
+/* Group sub-filter pills */
+.group-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  animation: fadeSlideDown 220ms ease;
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: .84rem;
+  font-weight: 500;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text-2);
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.gpill:hover {
+  background: var(--page-color-soft);
+  border-color: var(--page-color);
+  color: var(--page-color-dark);
+}
+.gpill.active {
+  background: var(--page-color);
+  border-color: var(--page-color);
+  color: var(--white);
+  font-weight: 600;
+}
+
 /* Filter row (age pills + clear) */
 .filter-row {
   display: flex;
@@ -1659,8 +1696,7 @@ mark.search-mark {
   background: var(--white);
   border-radius: 20px;
   box-shadow: 0 32px 80px rgba(0, 0, 0, .35);
-  width: min(90vw, 780px);
-  max-height: 90vh;
+  width: min(82vw, 720px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1708,9 +1744,8 @@ mark.search-mark {
 .embed-modal-close:hover { background: var(--coral); color: var(--white); }
 
 .embed-modal-frame {
-  flex: 1;
+  width: 100%;
   aspect-ratio: 4 / 3;
-  min-height: 0;
 }
 .embed-modal-frame iframe {
   width: 100%;

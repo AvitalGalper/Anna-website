@@ -759,35 +759,6 @@ function applyTiltToCards() {
 }
 
 
-// ══════════════════════════════════════════
-// COUNTER ANIMATION  (hero stats)
-// ══════════════════════════════════════════
-
-function initCounterAnimation() {
-  const els = document.querySelectorAll(".hstat-num");
-  if (!els.length) return;
-
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      obs.unobserve(en.target);
-      const el  = en.target;
-      const raw = el.textContent;
-      const num = parseInt(raw);
-      if (isNaN(num) || num <= 2) return;
-      const suffix = raw.replace(/[0-9]/g, "");
-      let cur = 0;
-      const step = Math.max(14, Math.floor(1100 / num));
-      const timer = setInterval(() => {
-        cur++;
-        el.textContent = cur + suffix;
-        if (cur >= num) clearInterval(timer);
-      }, step);
-    });
-  }, { threshold: 0.6 });
-
-  els.forEach(el => obs.observe(el));
-}
 
 
 // ══════════════════════════════════════════
@@ -820,6 +791,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     initHomeCounts();
     initParallax();
     initCardTilt();
-    initCounterAnimation();
   }
 });

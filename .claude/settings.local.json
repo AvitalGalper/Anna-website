@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f in index.html games.html activities.html units.html about.html)",
+      "Bash(do)",
+      "Bash(sed -i '/<div class=\"\"ftr-wave\"\"/,/<\\\\/div>/d' \"c:/Users/avita/OneDrive/Desktop/anna-website/$f\")",
+      "Bash(sed -i '/<div class=\"\"container ftr-inner\"\"/,/<\\\\/div>/{ /<div class=\"\"ftr-brand\"\"/,/<\\\\/div>/d; /<div class=\"\"container ftr-inner\"\">/d; /^[[:space:]]*<\\\\/div>[[:space:]]*$/{ /ftr-inner/!d; } }' \"c:/Users/avita/OneDrive/Desktop/anna-website/$f\")",
+      "Bash(done)",
+      "Bash(ls -la c:UsersavitaOneDriveDesktopanna-website*.html)",
+      "Bash(ls -la \"/c/Users/avita/OneDrive/Desktop/anna-website/\"*.html)",
+      "Bash(grep -oE '\\\\s\\(class|id\\)=\"\"[^\"\"]*\"\"' /c/Users/avita/OneDrive/Desktop/anna-website/*.html)",
+      "Bash(__NEW_LINE_e84b57f42ad40829__ echo \"=== Checking clearFilters ===\")",
+      "Bash(grep -n \"clearFilters\" /c/Users/avita/OneDrive/Desktop/anna-website/*.html /c/Users/avita/OneDrive/Desktop/anna-website/script.js)",
+      "Bash(__NEW_LINE_e84b57f42ad40829__ echo \"\")",
+      "Bash(grep -n \"handleSubmit\" /c/Users/avita/OneDrive/Desktop/anna-website/*.html /c/Users/avita/OneDrive/Desktop/anna-website/script.js)",
+      "Bash(__NEW_LINE_d442ef8e2e812ed8__ echo \"=== Checking hero-stats in JS ===\")",
+      "Bash(__NEW_LINE_d442ef8e2e812ed8__ echo \"\")",
+      "Bash(grep \"hero-stats\" /c/Users/avita/OneDrive/Desktop/anna-website/*.html)",
+      "Bash(__NEW_LINE_4cd83682185e85e3__ echo \"\")",
+      "Bash(grep -rn \"hstat\\\\|hero-stats\" /c/Users/avita/OneDrive/Desktop/anna-website/*.html)",
+      "Bash(__NEW_LINE_33fb801549ed42ca__ echo \"=== Footer structure in all HTML files ===\")",
+      "Bash(grep -A 4 '<footer' /c/Users/avita/OneDrive/Desktop/anna-website/*.html)",
+      "Bash(grep -B2 -A2 \"portals-bg-video\\\\|content-bg-video\" /c/Users/avita/OneDrive/Desktop/anna-website/*.html)"
+    ]
+  }
+}

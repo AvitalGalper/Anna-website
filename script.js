@@ -38,7 +38,6 @@ const PAGE_TYPE = document.body.dataset.pageType || null;
 
 // ── Active filter state ─────────────────────────────────────────
 let activeTopic  = "all";
-let activeAge    = "all";
 let activeGroup  = "all";
 let searchQuery  = "";
 
@@ -192,7 +191,6 @@ function renderCards() {
   const filtered = allResources.filter(item => {
     if (PAGE_TYPE && item.type !== PAGE_TYPE) return false;
     if (activeTopic !== "all" && item.topic !== activeTopic) return false;
-    if (activeAge   !== "all" && !item.age.includes(activeAge)) return false;
     if (activeGroup !== "all" && (item.group || "") !== activeGroup) return false;
     if (searchQuery) {
       const q       = searchQuery.toLowerCase();
@@ -454,34 +452,11 @@ function updateGroupFilters() {
 
 
 // ══════════════════════════════════════════
-// AGE FILTER  (class="pill", data-age)
-// ══════════════════════════════════════════
-
-function initAgeFilters() {
-  const wrap = document.getElementById("ageFilters");
-  if (!wrap) return;
-
-  wrap.addEventListener("click", e => {
-    const btn = e.target.closest("[data-age]");
-    if (!btn) return;
-    activeAge = btn.dataset.age;
-    wrap.querySelectorAll("[data-age]").forEach(b => {
-      const isActive = b === btn;
-      b.classList.toggle("active", isActive);
-      b.setAttribute("aria-pressed", String(isActive));
-    });
-    renderCards();
-  });
-}
-
-
-// ══════════════════════════════════════════
 // CLEAR ALL FILTERS  (called from HTML onclick)
 // ══════════════════════════════════════════
 
 function clearFilters() {
   activeTopic = "all";
-  activeAge   = "all";
   activeGroup = "all";
   searchQuery = "";
 
@@ -495,12 +470,6 @@ function clearFilters() {
     b.classList.toggle("active", isAll);
     b.setAttribute("aria-pressed", String(isAll));
   });
-  document.querySelectorAll("[data-age]").forEach(b => {
-    const isAll = b.dataset.age === "all";
-    b.classList.toggle("active", isAll);
-    b.setAttribute("aria-pressed", String(isAll));
-  });
-
   const gw = document.getElementById("groupFilters");
   if (gw) { gw.hidden = true; gw.innerHTML = ""; }
 
@@ -841,7 +810,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCards();                           // render cards (sorted, possibly grouped)
     initSearch();
     initTopicFilters();
-    initAgeFilters();
     initEmbedModal();
     initCardTilt();
   }

@@ -314,6 +314,8 @@ function initTopicPillsFromData() {
     }
   });
 
+  topics.sort((a, b) => a.localeCompare(b, "he"));
+
   if (!topics.length) return;
 
   // Keep the "הכל" button; replace everything else
@@ -407,6 +409,8 @@ function updateGroupFilters() {
       groups.push(item.group);
     }
   });
+
+  groups.sort((a, b) => a.localeCompare(b, "he"));
 
   // Hide if no groups or no topic selected
   if (!groups.length || activeTopic === "all") {

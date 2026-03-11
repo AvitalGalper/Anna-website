@@ -46,6 +46,54 @@ const SHEET_CSV_URL =
  * On any network or parse error, logs a warning and returns []
  * so the site remains functional (shows empty state).
  */
+const CACHE_KEY = "anna_content_v1";
+const CACHE_TTL  = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+// Clear cache if ?refresh is in the URL (use when you add new content to the sheet)
+if (location.search.includes("refresh")) {
+  try { localStorage.removeItem(CACHE_KEY); } catch (_) {}
+}
+
+function _readCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { ts, items } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(CACHE_KEY); return null; }
+    return items;
+  } catch (_) { return null; }
+}
+
+function _writeCache(items) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items })); } catch (_) {}
+}
+
+// Kick off the network request immediately when this script loads —
+// before DOMContentLoaded — so data arrives as early as possible.
+let _earlyPromise = null;
+
+(function _earlyFetch() {
+  if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("PASTE_")) return;
+  if (_readCache()) return; // already cached → nothing to prefetch
+
+  _earlyPromise = fetch(SHEET_CSV_URL)
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.text();
+    })
+    .then(csv => {
+      const items = parseCSV(csv);
+      _writeCache(items);
+      console.info(`[data.js] ✓ Loaded ${items.length} items from Google Sheets`);
+      return items;
+    })
+    .catch(err => {
+      _earlyPromise = null;
+      console.warn(`[data.js] ✗ ${err.message}`);
+      return [];
+    });
+})();
+
 async function loadContentData() {
 
   // If the URL is still the placeholder, warn and return empty
@@ -58,18 +106,26 @@ async function loadContentData() {
     return [];
   }
 
+  // Return cached data from localStorage (instant, valid for 24h)
+  const cached = _readCache();
+  if (cached) {
+    console.info(`[data.js] ✓ Loaded ${cached.length} items from cache`);
+    return cached;
+  }
+
+  // Reuse the in-flight early fetch if still running
+  if (_earlyPromise) return _earlyPromise;
+
+  // Fallback: fetch now (shouldn't normally reach here)
   try {
     const res = await fetch(SHEET_CSV_URL);
-    if (!res.ok) throw new Error(`Server returned HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const csv   = await res.text();
     const items = parseCSV(csv);
-    console.info(`[data.js] ✓ Loaded ${items.length} items from Google Sheets`);
+    _writeCache(items);
     return items;
   } catch (err) {
-    console.warn(
-      `[data.js] ✗ Could not load Google Sheet: ${err.message}\n` +
-      "  Check SHEET_CSV_URL in data.js. The site will show an empty list."
-    );
+    console.warn(`[data.js] ✗ Could not load Google Sheet: ${err.message}`);
     return [];
   }
 }

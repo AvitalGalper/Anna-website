@@ -24,9 +24,9 @@
       </a>
       <nav class="hdr-nav" aria-label="ניווט ראשי">
         <a href="index.html"         class="nav-link">בית</a>
-        <a href="games.html"         class="nav-link active">משחקים</a>
-        <a href="activities.html"    class="nav-link">פעילויות</a>
-        <a href="units.html"         class="nav-link">יחידות</a>
+        <a href="activities.html"    class="nav-link">הדרכה לגננת</a>
+        <a href="units.html"         class="nav-link">גלויות מקוונות</a>
+        <a href="games.html"         class="nav-link active">משחקים דיגיטליים</a>
         <a href="about.html"         class="nav-link">אודות</a>
       </nav>
       <button class="hdr-burger" id="burgerBtn" aria-label="פתח תפריט" aria-expanded="false">
@@ -35,10 +35,10 @@
     </div>
     <div class="hdr-mobile" id="mobileMenu" aria-hidden="true">
       <a href="index.html"         class="mobile-link">🏠 בית</a>
+      <a href="activities.html"    class="mobile-link">📋 הדרכה לגננת</a>
+      <a href="units.html"         class="mobile-link">📚 גלויות מקוונות</a>
       <a href="games.html"         class="mobile-link">🖥️ משחקים דיגיטליים</a>
-      <a href="activities.html"    class="mobile-link">📋 מערכי פעילות</a>
-      <a href="units.html"         class="mobile-link">📚 יחידות תוכן</a>
-      <a href="about.html"         class="mobile-link">👩‍🏫 אודות אנה</a>
+      <a href="about.html"         class="mobile-link">👩‍🏫 אודות</a>
     </div>
   </header>
 
@@ -111,6 +111,7 @@
   <footer class="site-footer">
     <div class="container ftr-copy">
       <p>© 2026 אנה גלפר | כל הזכויות שמורות 🦋</p>
+      <p class="ftr-credit">עוצב ופותח על ידי <span>אביטל גלפר</span></p>
     </div>
   </footer>
 
@@ -122,8 +123,19 @@
         <h2 class="embed-modal-title" id="embedModalTitle"></h2>
         <button class="embed-modal-close" id="embedModalClose" aria-label="סגור">✕</button>
       </div>
-      <div class="embed-modal-frame">
-        <iframe id="embedModalIframe" src="" allowfullscreen></iframe>
+      <div class="embed-modal-body">
+        <div class="embed-modal-frame">
+          <iframe id="embedModalIframe" src="" allowfullscreen></iframe>
+        </div>
+        <aside class="embed-modal-comments" id="embedModalComments" aria-label="תגובות">
+          <div class="emc-header">💬 תגובות</div>
+          <div class="emc-list" id="emcList"></div>
+          <form class="emc-form" id="emcForm" novalidate>
+            <input class="emc-name" id="emcName" type="text" placeholder="השם שלך (אופציונלי)" maxlength="50" autocomplete="off" />
+            <textarea class="emc-text" id="emcText" placeholder="כתבו תגובה על המשחק..." rows="3" maxlength="500" required></textarea>
+            <button class="emc-submit" type="submit">💬 שלחו תגובה</button>
+          </form>
+        </aside>
       </div>
     </div>
   </div>

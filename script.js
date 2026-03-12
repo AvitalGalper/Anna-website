@@ -4,9 +4,12 @@
 // ══════════════════════════════════════════════════════════════
 
 
+// ── Likes backend URL (paste after deploying likes-script.gs) ──
+const LIKES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3RtQxeoZl4-NjfNdEzgfdcXdv8LAbnGPoAze7W9fahwPQpxuNN5wM-ipruMIzWa24/exec";
+
 // ── Content type → display config ──────────────────────────────
 const TYPE_CONFIG = {
-  "משחק דיגיטלי": { cls: "games", cta: "שחק עכשיו ▶", emoji: "🧩" },
+  "משחק דיגיטלי": { cls: "games", cta: "▶ שחקו עכשיו", emoji: "🧩" },
   "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗",  emoji: "📋" },
   "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗", emoji: "📚" },
 };
@@ -14,20 +17,65 @@ const TYPE_CONFIG = {
 // ── Topic → icon map ────────────────────────────────────────────
 // Add new topics here as needed; unknown topics get no icon.
 const TOPIC_ICONS = {
-  "חגים":        "🕎",
-  "פורים":       "🎭",
-  "פסח":         "🍷",
-  "חנוכה":       "🕎",
-  "ראש השנה":   "🍎",
-  "סוכות":      "🌿",
-  "שבועות":     "🌸",
-  "עונות השנה": "🍂",
-  "צבעים":      "🌈",
-  "מספרים":     "🔢",
-  "אותיות":     "🔤",
-  "רגשות":      "😊",
-  "חיות":       "🐾",
-  "צורות":      "🔷",
+  // חגים ומועדים
+  "חגים":           "🎉",
+  "בריאת העולם":    "🌍",
+  "חלל":            "👽",
+  "פורים":          "🎭",
+  "פסח":            "🍷",
+  "חנוכה":          "🕎",
+  "ראש השנה":      "🍎",
+  "סוכות":         "🌿",
+  "שבועות":        "🌸",
+  "יום העצמאות":   "🇮🇱",
+  "ל\"ג בעומר":    "🔥",
+  "שבת":           "🕯️",
+  "טו בשבט":       "🌳",
+  // טבע וסביבה
+  "עונות השנה":    "🍂",
+  "בעלי חיים":     "🐾",
+  "חיות בר":       "🦁",
+  "חיות משק":      "🐄",
+  "ירקות ופירות":  "🥕",
+  "גינה":           "🌱",
+  "מזג אוויר":     "⛅",
+  "מים":           "💧",
+  // שפה ואוריינות
+  "שפה ואוריינות":        "🔤",
+  "קריאה":         "📖",
+  "כתיבה":         "✏️",
+  "שפה":           "💬",
+  "חיים נחמן ביאליק":   "📖",
+  // מתמטיקה
+  "חשבון":        "🔢",
+  "צורות":         "🔷",
+  "מדידה":         "📏",
+  "כמויות":        "⚖️",
+  // עולם חברתי
+  "רגשות":         "😊",
+  "משפחה":         "👨‍👩‍👧",
+  "גוף האדם":      "🧍",
+  "בריאות":        "🩺",
+  "מקצועות":       "👷",
+  "חברות":         "🤝",
+  "יום הולדת":     "🎁",
+  "עונות":         "🌤️",
+  // צבעים ויצירה
+  "צבעים":         "🌈",
+  "יצירה":         "🎨",
+  "מוזיקה":        "🎵",
+  "זהירות בדרכים": "🚸",
+  // כללי
+  "כללי":          "📌",
+};
+
+// ── Topic → custom image URL (overrides emoji when set) ─────────
+// Add entries here to replace an emoji with a PNG/SVG/WebP image.
+// Example:
+//   "פורים": "https://example.com/purim-icon.png",
+const TOPIC_IMAGES = {
+  //"בעלי חיים":"https://img2.clipart-library.com/28/transparent-animal-clipart/transparent-animal-clipart-30.png"
+  // "שם קטגוריה": "https://...",
 };
 
 // ── All loaded items (populated async from Google Sheets) ───────
@@ -84,6 +132,87 @@ function showLoadingState() {
 // CREATE CARD
 // ══════════════════════════════════════════
 
+// ══════════════════════════════════════════
+// LIKES
+// ══════════════════════════════════════════
+
+let likesCache = {};
+
+function getLikedSet() {
+  try { return new Set(JSON.parse(localStorage.getItem("liked_items") || "[]")); }
+  catch { return new Set(); }
+}
+function saveLikedSet(set) {
+  localStorage.setItem("liked_items", JSON.stringify([...set]));
+}
+
+async function loadLikes() {
+  if (!LIKES_SCRIPT_URL || LIKES_SCRIPT_URL.includes("PASTE_")) return;
+  try {
+    const res = await fetch(LIKES_SCRIPT_URL);
+    likesCache = await res.json();
+  } catch {}
+}
+
+function updateLikeButtons() {
+  const liked = getLikedSet();
+  document.querySelectorAll(".rcard-like").forEach(btn => {
+    const title = btn.dataset.title;
+    const count = likesCache[title] || 0;
+    const isLiked = liked.has(title);
+    btn.querySelector(".like-icon").textContent  = isLiked ? "❤️" : "🤍";
+    btn.querySelector(".like-count").textContent = count > 0 ? count : "";
+    btn.classList.toggle("liked", isLiked);
+    btn.setAttribute("aria-label", isLiked ? "הסר לייק" : "תן לייק");
+  });
+}
+
+function spawnHearts(btn) {
+  const rect  = btn.getBoundingClientRect();
+  const cx    = rect.left + rect.width  / 2;
+  const cy    = rect.top  + rect.height / 2;
+  const count = 10 + Math.floor(Math.random() * 6);
+
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement("span");
+    h.className   = "heart-particle";
+    h.textContent = Math.random() > 0.3 ? "❤️" : "🩷";
+    h.style.left  = cx + (Math.random() - 0.5) * 40 + "px";
+    h.style.top   = cy + "px";
+    h.style.fontSize = (Math.random() * 18 + 10) + "px";
+    h.style.setProperty("--dx", (Math.random() - 0.5) * 120 + "px");
+    h.style.setProperty("--dy",  (Math.random() * 260 + 120) + "px");
+    h.style.animationDelay    = (Math.random() * 280) + "ms";
+    h.style.animationDuration = (Math.random() * 600 + 900) + "ms";
+    document.body.appendChild(h);
+    h.addEventListener("animationend", () => h.remove(), { once: true });
+  }
+}
+
+async function toggleLike(title, btn) {
+  if (!LIKES_SCRIPT_URL || LIKES_SCRIPT_URL.includes("PASTE_")) return;
+  const liked  = getLikedSet();
+  const action = liked.has(title) ? "unlike" : "like";
+
+  // Optimistic update
+  if (action === "like") { liked.add(title);    likesCache[title] = (likesCache[title] || 0) + 1; }
+  else                   { liked.delete(title); likesCache[title] = Math.max(0, (likesCache[title] || 0) - 1); }
+  saveLikedSet(liked);
+  updateLikeButtons();
+
+  if (action === "like") spawnHearts(btn);
+
+  // Sync with server
+  try {
+    const res  = await fetch(LIKES_SCRIPT_URL, { method: "POST", body: JSON.stringify({ title, action }) });
+    const data = await res.json();
+    likesCache[title] = data.likes;
+    updateLikeButtons();
+  } catch {}
+}
+
+// ══════════════════════════════════════════
+
 function createCard(item) {
   const cfg = TYPE_CONFIG[item.type] || { cls: "games", cta: "פתח ↗", emoji: "📄" };
 
@@ -129,6 +258,18 @@ function createCard(item) {
     tTag.textContent = item.topic;
     tags.appendChild(tTag);
   }
+
+  // Like button — same row as tags, pushed to left
+  const likeBtn = document.createElement("button");
+  likeBtn.type = "button";
+  likeBtn.className = "rcard-like";
+  likeBtn.dataset.title = item.title;
+  likeBtn.setAttribute("aria-label", "תן לייק");
+  likeBtn.innerHTML = `<span class="like-icon">🤍</span><span class="like-count"></span>`;
+  likeBtn.style.marginInlineStart = "auto";
+  likeBtn.addEventListener("click", (e) => { e.stopPropagation(); toggleLike(item.title, likeBtn); });
+  tags.appendChild(likeBtn);
+
   body.appendChild(tags);
 
   // Title
@@ -143,28 +284,30 @@ function createCard(item) {
     body.appendChild(desc);
   }
 
+  // Buttons row
+  const actions = document.createElement("div");
+  actions.className = "rcard-actions";
+
   // CTA button
   if (item.embed) {
-    // Open in-page modal
     const btn = document.createElement("button");
     btn.type        = "button";
     btn.className   = `rcard-btn rcard-btn-${cfg.cls}`;
     btn.textContent = cfg.cta;
     btn.addEventListener("click", (e) => { e.stopPropagation(); openEmbedModal(item); });
-    body.appendChild(btn);
+    actions.appendChild(btn);
 
     article.addEventListener("click",   () => openEmbedModal(item));
     article.addEventListener("keydown", (e) => { if (e.key === "Enter") openEmbedModal(item); });
 
   } else if (item.link) {
-    // Open in new tab
     const btn = document.createElement("a");
     btn.href        = item.link;
     btn.target      = "_blank";
     btn.rel         = "noopener noreferrer";
     btn.className   = `rcard-btn rcard-btn-${cfg.cls}`;
     btn.textContent = cfg.cta;
-    body.appendChild(btn);
+    actions.appendChild(btn);
 
     article.addEventListener("click", (e) => {
       if (!e.target.closest("a")) window.open(item.link, "_blank");
@@ -174,8 +317,52 @@ function createCard(item) {
     });
   }
 
+  // Share button
+  const shareUrl = item.embed
+    ? `${location.origin}${location.pathname}?open=${encodeURIComponent(item.title)}`
+    : item.link;
+  if (shareUrl) {
+    const shareBtn = document.createElement("button");
+    shareBtn.type = "button";
+    shareBtn.className = `rcard-btn rcard-btn-${cfg.cls} rcard-share`;
+    shareBtn.setAttribute("aria-label", "שתף קישור");
+    shareBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>שתף`;
+    shareBtn.addEventListener("click", (e) => { e.stopPropagation(); shareItem(item.title, shareUrl, shareBtn); });
+    actions.appendChild(shareBtn);
+  }
+
+  body.appendChild(actions);
   article.appendChild(body);
   return article;
+}
+
+function shareItem(title, url, btn) {
+  if (navigator.share) {
+    navigator.share({ title, url }).catch(() => {});
+  } else {
+    const origHTML = btn.innerHTML;
+    const markCopied = () => {
+      btn.textContent = "✓ הועתק!";
+      btn.classList.add("rcard-share--copied");
+      setTimeout(() => { btn.innerHTML = origHTML; btn.classList.remove("rcard-share--copied"); }, 2200);
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(markCopied).catch(() => fallbackCopy(url, markCopied));
+    } else {
+      fallbackCopy(url, markCopied);
+    }
+  }
+}
+
+function fallbackCopy(url, cb) {
+  const ta = document.createElement("textarea");
+  ta.value = url;
+  ta.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+  cb();
 }
 
 
@@ -188,16 +375,17 @@ function renderCards() {
   if (!grid) return;
 
   // ── Filter ────────────────────────────────────────────────────
+  // When searching — ignore topic/group filters and search everything
   const filtered = allResources.filter(item => {
     if (PAGE_TYPE && item.type !== PAGE_TYPE) return false;
-    if (activeTopic !== "all" && item.topic !== activeTopic) return false;
-    if (activeGroup !== "all" && (item.group || "") !== activeGroup) return false;
     if (searchQuery) {
       const q       = searchQuery.toLowerCase();
       const inTitle = item.title.toLowerCase().includes(q);
       const inDesc  = (item.description || "").toLowerCase().includes(q);
-      if (!inTitle && !inDesc) return false;
+      return inTitle || inDesc;
     }
+    if (activeTopic !== "all" && item.topic !== activeTopic) return false;
+    if (activeGroup !== "all" && (item.group || "") !== activeGroup) return false;
     return true;
   });
 
@@ -222,13 +410,44 @@ function renderCards() {
     empty.innerHTML = `<span class="es-icon">🔍</span><p>לא נמצאו תכנים. נסו לשנות את הסינון.</p>`;
     frag.appendChild(empty);
 
-  } else if (activeTopic !== "all" && filtered.some(item => item.group)) {
-    // ── Grouped layout ──────────────────────────────────────────
-    // Used when a specific topic is selected AND items have group values
-    // (e.g. פורים grouped by יום ראשון, יום שני, etc.)
-    // Groups appear in the order they are first encountered after sorting.
+  } else if (activeTopic === "all" && !searchQuery) {
+    // ── Grouped by topic (default "הכל" view) ───────────────────
+    const topicMap = new Map();
+    filtered.forEach(item => {
+      const key = item.topic || "כללי";
+      if (!topicMap.has(key)) topicMap.set(key, []);
+      topicMap.get(key).push(item);
+    });
 
-    const groupMap = new Map(); // Map preserves insertion order
+    let globalIdx = 0;
+    topicMap.forEach((items, topicName) => {
+      const section = document.createElement("div");
+      section.className = "topic-section";
+
+      const heading = document.createElement("div");
+      heading.className = "topic-section-heading";
+      const icon = TOPIC_ICONS[topicName] || "";
+      heading.innerHTML = `<span class="tsh-icon">${icon}</span><span class="tsh-name">${topicName}</span><span class="tsh-count">${items.length}</span>`;
+      section.appendChild(heading);
+
+      const inner = document.createElement("div");
+      inner.className = "cards-group-grid";
+
+      items.forEach(item => {
+        const card = createCard(item);
+        card.classList.add("reveal");
+        card.style.transitionDelay = Math.min(globalIdx * 40, 400) + "ms";
+        inner.appendChild(card);
+        globalIdx++;
+      });
+
+      section.appendChild(inner);
+      frag.appendChild(section);
+    });
+
+  } else if (activeTopic !== "all" && filtered.some(item => item.group)) {
+    // ── Grouped by sub-group (specific topic selected, items have groups) ──
+    const groupMap = new Map();
     filtered.forEach(item => {
       const key = item.group || "כללי";
       if (!groupMap.has(key)) groupMap.set(key, []);
@@ -259,7 +478,7 @@ function renderCards() {
     });
 
   } else {
-    // ── Flat layout (default) ────────────────────────────────────
+    // ── Flat layout (search results or single topic without groups) ──
     const inner = document.createElement("div");
     inner.className = "cards-group-grid";
 
@@ -302,15 +521,21 @@ function initTopicPillsFromData() {
   const wrap = document.getElementById("topicFilters");
   if (!wrap) return;
 
-  // Collect unique topics for this page's content type,
-  // in the order they first appear (respects sheet ordering).
   const seen   = new Set();
   const topics = [];
+  const counts = {};
+  let totalCount = 0;
+
   allResources.forEach(item => {
     if (PAGE_TYPE && item.type !== PAGE_TYPE) return;
-    if (item.topic && !seen.has(item.topic)) {
-      seen.add(item.topic);
-      topics.push(item.topic);
+    totalCount++;
+    if (item.topic) {
+      if (!seen.has(item.topic)) {
+        seen.add(item.topic);
+        topics.push(item.topic);
+        counts[item.topic] = 0;
+      }
+      counts[item.topic]++;
     }
   });
 
@@ -318,24 +543,76 @@ function initTopicPillsFromData() {
 
   if (!topics.length) return;
 
-  // Keep the "הכל" button; replace everything else
-  const allBtn = wrap.querySelector("[data-topic='all']");
   wrap.innerHTML = "";
-  if (allBtn) {
-    allBtn.classList.add("active");
-    allBtn.setAttribute("aria-pressed", "true");
-    wrap.appendChild(allBtn);
-  }
+
+  // Carousel wrapper (arrows positioned absolute over the track)
+  const carouselWrap = document.createElement("div");
+  carouselWrap.className = "topic-carousel-wrap";
+
+  const track = document.createElement("div");
+  track.className = "topic-tile-grid";
+
+  // "הכל" tile
+  const allTile = document.createElement("button");
+  allTile.className = "topic-tile active";
+  allTile.dataset.topic = "all";
+  allTile.setAttribute("aria-pressed", "true");
+  allTile.innerHTML = `<span class="tt-icon">✨</span><span class="tt-name">הכל</span><span class="tt-count">${totalCount}</span>`;
+  track.appendChild(allTile);
 
   topics.forEach(topic => {
-    const btn = document.createElement("button");
-    btn.className       = "tpill";
-    btn.dataset.topic   = topic;
-    btn.setAttribute("aria-pressed", "false");
-    const icon = TOPIC_ICONS[topic] ? TOPIC_ICONS[topic] + " " : "";
-    btn.textContent = icon + topic;
-    wrap.appendChild(btn);
+    const tile = document.createElement("button");
+    tile.className = "topic-tile";
+    tile.dataset.topic = topic;
+    tile.setAttribute("aria-pressed", "false");
+    const imgUrl = TOPIC_IMAGES[topic];
+    if (imgUrl) {
+      tile.classList.add("topic-tile--bg");
+      tile.style.backgroundImage =
+        `linear-gradient(to bottom, transparent 30%, rgba(0,0,0,.58) 100%), url(${imgUrl})`;
+      tile.innerHTML =
+        `<span class="tt-name">${topic}</span><span class="tt-count tt-count--light">${counts[topic]}</span>`;
+    } else {
+      tile.innerHTML =
+        `<span class="tt-icon">${TOPIC_ICONS[topic] || "📁"}</span><span class="tt-name">${topic}</span><span class="tt-count">${counts[topic]}</span>`;
+    }
+    track.appendChild(tile);
   });
+
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "tcarousel-arrow tcarousel-prev tcarousel-hidden";
+  prevBtn.setAttribute("aria-label", "הבא");
+  prevBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "tcarousel-arrow tcarousel-next tcarousel-hidden";
+  nextBtn.setAttribute("aria-label", "הקודם");
+  nextBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3l-5 5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  const STEP = 106 * 3;
+
+  function updateArrows() {
+    const sl        = track.scrollLeft;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    // RTL: scrollLeft is 0 at right-end, negative at left-end (Chrome) OR
+    //      positive-max at right-end, 0 at left-end (Firefox)
+    const atRightEnd = sl > -4 && sl < 4;
+    const atLeftEnd  = Math.abs(Math.abs(sl) - maxScroll) < 4;
+    prevBtn.classList.toggle("tcarousel-hidden", atRightEnd);
+    nextBtn.classList.toggle("tcarousel-hidden", atLeftEnd);
+  }
+
+  prevBtn.addEventListener("click", () => track.scrollBy({ left:  STEP, behavior: "smooth" }));
+  nextBtn.addEventListener("click", () => track.scrollBy({ left: -STEP, behavior: "smooth" }));
+  track.addEventListener("scroll", updateArrows, { passive: true });
+
+  carouselWrap.appendChild(track);
+  carouselWrap.appendChild(prevBtn);
+  carouselWrap.appendChild(nextBtn);
+  wrap.appendChild(carouselWrap);
+
+  // Initial arrow state after layout
+  requestAnimationFrame(updateArrows);
 }
 
 
@@ -377,8 +654,13 @@ function initTopicFilters() {
   wrap.addEventListener("click", e => {
     const btn = e.target.closest("[data-topic]");
     if (!btn) return;
-    activeTopic = btn.dataset.topic;
-    activeGroup = "all";
+    activeTopic  = btn.dataset.topic;
+    activeGroup  = "all";
+    searchQuery  = "";
+    const si = document.getElementById("searchInput");
+    if (si) si.value = "";
+    const sc = document.getElementById("searchClear");
+    if (sc) sc.style.display = "none";
     wrap.querySelectorAll("[data-topic]").forEach(b => {
       const isActive = b === btn;
       b.classList.toggle("active", isActive);
@@ -593,6 +875,7 @@ function openEmbedModal(item) {
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   document.getElementById("embedModalClose").focus();
+  loadComments(item.title);
 }
 
 function closeEmbedModal() {
@@ -609,6 +892,100 @@ function initEmbedModal() {
   document.getElementById("embedModalClose")   .addEventListener("click", closeEmbedModal);
   document.getElementById("embedModalBackdrop").addEventListener("click", closeEmbedModal);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeEmbedModal(); });
+}
+
+
+// ══════════════════════════════════════════
+// COMMENTS
+// ══════════════════════════════════════════
+
+let _currentCommentTitle = "";
+const commentsCache = {};   // { [title]: comments[] } — cached per session
+
+async function loadComments(title) {
+  _currentCommentTitle = title;
+  const list = document.getElementById("emcList");
+  if (!list) return;
+
+  // Serve from cache instantly if available
+  if (commentsCache[title]) {
+    renderComments(commentsCache[title]);
+    return;
+  }
+
+  list.innerHTML = `<p class="emc-loading">טוענים תגובות...</p>`;
+  if (!LIKES_SCRIPT_URL || LIKES_SCRIPT_URL.includes("PASTE_")) {
+    list.innerHTML = `<p class="emc-empty">תגובות אינן זמינות כרגע.</p>`;
+    return;
+  }
+  try {
+    const res  = await fetch(`${LIKES_SCRIPT_URL}?type=comments&title=${encodeURIComponent(title)}`);
+    const data = await res.json();
+    commentsCache[title] = data.comments || [];
+    renderComments(commentsCache[title]);
+  } catch {
+    list.innerHTML = `<p class="emc-empty">שגיאה בטעינת תגובות.</p>`;
+  }
+}
+
+function renderComments(comments) {
+  const list = document.getElementById("emcList");
+  if (!list) return;
+  if (!comments.length) {
+    list.innerHTML = `<p class="emc-empty">היו ראשונים להגיב! 💬</p>`;
+    return;
+  }
+  list.innerHTML = comments.map(c => `
+    <div class="emc-item">
+      <div class="emc-item-header">
+        <span class="emc-item-name">${escHtml(c.name || "אנונימי")}</span>
+        <span class="emc-item-date">${escHtml(c.date || "")}</span>
+      </div>
+      <p class="emc-item-text">${escHtml(c.text)}</p>
+    </div>
+  `).join("");
+  list.scrollTop = list.scrollHeight;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+async function submitComment(e) {
+  e.preventDefault();
+  const title  = _currentCommentTitle;
+  const nameEl = document.getElementById("emcName");
+  const textEl = document.getElementById("emcText");
+  if (!textEl || !textEl.value.trim()) return;
+  const name = (nameEl?.value || "").trim() || "אנונימי";
+  const text = textEl.value.trim();
+
+  // Show immediately — don't wait for server
+  const today = new Date();
+  const dateStr = today.getDate() + "/" + (today.getMonth()+1) + "/" + today.getFullYear();
+  const optimistic = { name, text, date: dateStr };
+  commentsCache[title] = [...(commentsCache[title] || []), optimistic];
+  renderComments(commentsCache[title]);
+  textEl.value = "";
+  if (nameEl) nameEl.value = "";
+
+  // Send to server silently in background
+  fetch(LIKES_SCRIPT_URL, {
+    method : "POST",
+    body   : JSON.stringify({ type: "comment", title, name, text })
+  })
+    .then(r => r.json())
+    .then(data => { commentsCache[title] = data.comments || commentsCache[title]; })
+    .catch(() => {/* silent — comment already shown */});
+}
+
+function initComments() {
+  const form = document.getElementById("emcForm");
+  if (form) form.addEventListener("submit", submitComment);
 }
 
 
@@ -786,7 +1163,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     initSearch();
     initTopicFilters();
     initEmbedModal();
+    initComments();
     initCardTilt();
+
+    // Load likes from server
+    loadLikes().then(updateLikeButtons);
+
+    // Auto-open modal if URL contains ?open=
+    const openParam = new URLSearchParams(location.search).get("open");
+    if (openParam) {
+      const target = allResources.find(r => r.title === openParam && r.embed);
+      if (target) openEmbedModal(target);
+    }
   }
 
   // ── Homepage: item counts on portal cards ──

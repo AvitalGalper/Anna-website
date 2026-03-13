@@ -1949,6 +1949,7 @@ mark.search-mark {
 }
 .embed-modal-close:hover { background: var(--coral); color: var(--white); }
 
+
 .embed-modal-frame {
   flex: 0 0 auto;
   width: min(62%, 720px);
@@ -1959,6 +1960,22 @@ mark.search-mark {
   height: 100%;
   border: none;
   display: block;
+}
+
+/* ── PDF modal — הדרכה לגננת (activities page) ── */
+body[data-page-type="מערך פעילות"] .embed-modal-box {
+  height: 82vh;
+  max-height: 82vh;
+}
+body[data-page-type="מערך פעילות"] .embed-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+body[data-page-type="מערך פעילות"] .embed-modal-frame {
+  aspect-ratio: auto;
+  height: 100%;
 }
 
 /* ── Comments panel ── */

@@ -322,10 +322,10 @@ function createCard(item) {
     actions.appendChild(btn);
 
     article.addEventListener("click", (e) => {
-      if (!e.target.closest("a")) window.open(item.link, "_blank");
+      if (!e.target.closest("a")) window.open(item.link, "_blank", "noopener,noreferrer");
     });
     article.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") window.open(item.link, "_blank");
+      if (e.key === "Enter") window.open(item.link, "_blank", "noopener,noreferrer");
     });
   }
 
@@ -941,7 +941,9 @@ function openEmbedModal(item) {
   const modal = document.getElementById("embedModal");
   if (!modal) return;
   document.getElementById("embedModalTitle").textContent = item.title;
-  document.getElementById("embedModalIframe").src = item.embed;
+  const iframe = document.getElementById("embedModalIframe");
+  iframe.src = item.embed;
+
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   document.getElementById("embedModalClose").focus();

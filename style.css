@@ -1964,25 +1964,28 @@ mark.search-mark {
 
 /* ── PDF modal — הדרכה לגננת (activities page) ── */
 body[data-page-type="מערך פעילות"] .embed-modal-box {
-  width: min(96vw, 1200px);
-  height: 88vh;
-  max-height: 88vh;
+  width: min(96vw, 960px);
+  height: 92vh;
+  max-height: 92vh;
 }
 body[data-page-type="מערך פעילות"] .embed-modal-body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  align-items: stretch;
+}
+body[data-page-type="מערך פעילות"] .embed-modal-comments {
+  display: none;
 }
 body[data-page-type="מערך פעילות"] .embed-modal-frame {
-  flex: 2;
-  width: auto;
+  flex: 1;
+  width: 100%;
   aspect-ratio: auto;
   height: 100%;
   overflow: hidden;
 }
 /* Hide Google Docs Viewer toolbar by shifting iframe up */
 body[data-page-type="מערך פעילות"] .embed-modal-frame iframe {
+  width: 100%;
   margin-top: -40px;
   height: calc(100% + 40px);
 }

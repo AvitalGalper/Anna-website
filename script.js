@@ -14,23 +14,39 @@ const TYPE_CONFIG = {
   "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗", emoji: "📚" },
 };
 
+// ── Topic display order (holidays follow the Jewish calendar year) ──
+// Topics listed here appear first, in this order.
+// Topics NOT listed here are sorted alphabetically afterwards.
+const TOPIC_ORDER = [
+  "ראש השנה",
+  "סוכות",
+  "שבת",
+  "חנוכה",
+  "טו בשבט",
+  "פורים",
+  "פסח",
+  "ל\"ג בעומר",
+  "שבועות",
+  "יום העצמאות",
+];
+
 // ── Topic → icon map ────────────────────────────────────────────
 // Add new topics here as needed; unknown topics get no icon.
 const TOPIC_ICONS = {
-  // חגים ומועדים
+  // חגים ומועדים — לפי סדר השנה היהודית
+  "ראש השנה":      "🍎",
+  "סוכות":         "🌿",
+  "שבת":           "🕯️",
+  "חנוכה":          "🕎",
+  "טו בשבט":       "🌳",
+  "פורים":          "🎭",
+  "פסח":            "🍷",
+  "ל\"ג בעומר":    "🔥",
+  "שבועות":        "🌸",
+  "יום העצמאות":   "🇮🇱",
   "חגים":           "🎉",
   "בריאת העולם":    "🌍",
   "חלל":            "👽",
-  "פורים":          "🎭",
-  "פסח":            "🍷",
-  "חנוכה":          "🕎",
-  "ראש השנה":      "🍎",
-  "סוכות":         "🌿",
-  "שבועות":        "🌸",
-  "יום העצמאות":   "🇮🇱",
-  "ל\"ג בעומר":    "🔥",
-  "שבת":           "🕯️",
-  "טו בשבט":       "🌳",
   // טבע וסביבה
   "עונות השנה":    "🍂",
   "בעלי חיים":     "🐾",
@@ -127,10 +143,6 @@ function showLoadingState() {
     </div>`;
 }
 
-
-// ══════════════════════════════════════════
-// CREATE CARD
-// ══════════════════════════════════════════
 
 // ══════════════════════════════════════════
 // LIKES
@@ -539,7 +551,14 @@ function initTopicPillsFromData() {
     }
   });
 
-  topics.sort((a, b) => a.localeCompare(b, "he"));
+  topics.sort((a, b) => {
+    const ia = TOPIC_ORDER.indexOf(a);
+    const ib = TOPIC_ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;          // שניהם בחגים — לפי סדר
+    if (ia !== -1) return -1;                             // רק a בחגים — קודם
+    if (ib !== -1) return 1;                              // רק b בחגים — קודם
+    return a.localeCompare(b, "he");                      // שאר הנושאים אלפביתית
+  });
 
   if (!topics.length) return;
 
@@ -692,7 +711,14 @@ function updateGroupFilters() {
     }
   });
 
-  groups.sort((a, b) => a.localeCompare(b, "he"));
+  groups.sort((a, b) => {
+    const ia = TOPIC_ORDER.indexOf(a);
+    const ib = TOPIC_ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    if (ia !== -1) return -1;
+    if (ib !== -1) return 1;
+    return a.localeCompare(b, "he");
+  });
 
   // Hide if no groups or no topic selected
   if (!groups.length || activeTopic === "all") {
@@ -760,6 +786,50 @@ function clearFilters() {
   if (gw) { gw.hidden = true; gw.innerHTML = ""; }
 
   renderCards();
+}
+
+
+// ══════════════════════════════════════════
+// ANNOUNCEMENT BANNER
+// ══════════════════════════════════════════
+
+function initAnnouncementBanner({ text, link }) {
+  if (!text) return;
+
+  const bar = document.createElement("div");
+  bar.className = "announcement-bar";
+  bar.setAttribute("role", "marquee");
+  bar.setAttribute("aria-label", "הכרזה");
+
+  const track = document.createElement("div");
+  track.className = "announcement-track";
+
+  for (let i = 0; i < 5; i++) {
+    const span = document.createElement("span");
+    span.className = "announcement-item";
+    span.textContent = text;
+    track.appendChild(span);
+  }
+
+  if (link) {
+    const a = document.createElement("a");
+    a.href = link;
+    a.style.cssText = "text-decoration:none;color:inherit;display:contents;";
+    a.appendChild(track);
+    bar.appendChild(a);
+  } else {
+    bar.appendChild(track);
+  }
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "announcement-close";
+  closeBtn.setAttribute("aria-label", "סגור הכרזה");
+  closeBtn.textContent = "✕";
+  closeBtn.addEventListener("click", () => { bar.remove(); document.body.classList.remove("has-announcement"); });
+  bar.appendChild(closeBtn);
+
+  document.body.classList.add("has-announcement");
+  document.body.appendChild(bar);
 }
 
 
@@ -938,21 +1008,13 @@ function renderComments(comments) {
   list.innerHTML = comments.map(c => `
     <div class="emc-item">
       <div class="emc-item-header">
-        <span class="emc-item-name">${escHtml(c.name || "אנונימי")}</span>
-        <span class="emc-item-date">${escHtml(c.date || "")}</span>
+        <span class="emc-item-name">${escapeHtml(c.name || "אנונימי")}</span>
+        <span class="emc-item-date">${escapeHtml(c.date || "")}</span>
       </div>
-      <p class="emc-item-text">${escHtml(c.text)}</p>
+      <p class="emc-item-text">${escapeHtml(c.text)}</p>
     </div>
   `).join("");
   list.scrollTop = list.scrollHeight;
-}
-
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 async function submitComment(e) {
@@ -1149,6 +1211,7 @@ function applyTiltToCards() {
 document.addEventListener("DOMContentLoaded", async () => {
   initScrollProgress();
   initScrollTop();
+  loadAnnouncement().then(initAnnouncementBanner);
   initCursorSparkles();
   initMobileMenu();
   initScrollReveal();

@@ -39,6 +39,36 @@ const SHEET_CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXyU8zb6bNStGQx_aFVmwVGkc_tNXoAExAgu8LZdLyoCgv7TPUM9SEKgVX50Ce3qajK_5DgALTTzV/pub?gid=0&single=true&output=csv";
 // ── ▲ ─────────────────────────────────────────────────────────────
 
+// ── ▼ הכרזה רצה — טאב נפרד ב-Google Sheets ──────────────────────
+//  הוראות:
+//  1. פתחי את הגיליון שלך → הוסיפי טאב חדש בשם "הכרזה"
+//  2. שורה 1 (כותרות):  text  |  link
+//  3. שורה 2 (ערכים):   הטקסט שתרצי | קישור (אופציונלי, אפשר להשאיר ריק)
+//  4. קובץ ← שתף ← פרסם לאינטרנט ← בחרי טאב "הכרזה" ← CSV ← העתיקי URL
+//  5. הדביקי כאן:
+const ANNOUNCEMENT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSOXyU8zb6bNStGQx_aFVmwVGkc_tNXoAExAgu8LZdLyoCgv7TPUM9SEKgVX50Ce3qajK_5DgALTTzV/pub?gid=377897368&single=true&output=csv"; // הדביקי כאן את ה-URL של טאב "הכרזה"
+//  כדי להסתיר את הבאנר — פשוט מחקי את תוכן שורה 2 בגיליון
+// ── ▲ ─────────────────────────────────────────────────────────────
+
+
+/**
+ * Loads the announcement banner text+link from the "הכרזה" sheet tab.
+ * Returns { text, link }. Empty text = no banner.
+ */
+async function loadAnnouncement() {
+  if (!ANNOUNCEMENT_CSV_URL) return { text: "", link: "" };
+  try {
+    const res = await fetch(ANNOUNCEMENT_CSV_URL + "&t=" + Date.now());
+    if (!res.ok) return { text: "", link: "" };
+    const lines = (await res.text()).trim().split(/\r?\n/);
+    if (lines.length < 2) return { text: "", link: "" };
+    const values = parseCSVRow(lines[1]);
+    return { text: (values[0] || "").trim(), link: (values[1] || "").trim() };
+  } catch {
+    return { text: "", link: "" };
+  }
+}
+
 
 /**
  * Loads all content rows from the Google Sheet.

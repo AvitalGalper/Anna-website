@@ -934,56 +934,6 @@ function initParallax() {
 // ══════════════════════════════════════════
 
 // ══════════════════════════════════════════
-// PDF.js VIEWER (activities page only)
-// ══════════════════════════════════════════
-
-function _extractPdfUrl(embedUrl) {
-  const m = embedUrl.match(/[?&]url=([^&]+)/);
-  return m ? decodeURIComponent(m[1]) : embedUrl;
-}
-
-async function _renderPdf(embedUrl) {
-  const container = document.getElementById("pdfViewerContainer");
-  if (!container) return;
-
-  container.innerHTML = `<div class="loading-state">
-    <div class="loading-spinner" aria-hidden="true"></div>
-    <p>טוענים PDF...</p>
-  </div>`;
-
-  const pdfUrl = _extractPdfUrl(embedUrl);
-
-  try {
-    if (typeof pdfjsLib === "undefined") throw new Error("PDF.js לא נטען");
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-    const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
-    const containerWidth = container.clientWidth - 32;
-    container.innerHTML = "";
-
-    for (let n = 1; n <= pdf.numPages; n++) {
-      const page     = await pdf.getPage(n);
-      const base     = page.getViewport({ scale: 1 });
-      const scale    = Math.max(containerWidth / base.width, 1);
-      const viewport = page.getViewport({ scale });
-
-      const canvas   = document.createElement("canvas");
-      canvas.width   = viewport.width;
-      canvas.height  = viewport.height;
-      canvas.style.cssText = "width:100%;display:block;";
-      container.appendChild(canvas);
-
-      await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
-    }
-  } catch (err) {
-    container.innerHTML = `<p style="padding:20px;color:#c00;text-align:center">שגיאה בטעינת ה-PDF</p>`;
-    console.warn("[PDF.js]", err);
-  }
-}
-
-
-// ══════════════════════════════════════════
 // EMBED MODAL
 // ══════════════════════════════════════════
 
@@ -991,12 +941,7 @@ function openEmbedModal(item) {
   const modal = document.getElementById("embedModal");
   if (!modal) return;
   document.getElementById("embedModalTitle").textContent = item.title;
-
-  if (PAGE_TYPE === "מערך פעילות") {
-    _renderPdf(item.embed);
-  } else {
-    document.getElementById("embedModalIframe").src = item.embed;
-  }
+  document.getElementById("embedModalIframe").src = item.embed;
 
   modal.hidden = false;
   document.body.style.overflow = "hidden";
@@ -1007,10 +952,7 @@ function openEmbedModal(item) {
 function closeEmbedModal() {
   const modal = document.getElementById("embedModal");
   if (!modal || modal.hidden) return;
-  const iframe = document.getElementById("embedModalIframe");
-  if (iframe) iframe.src = "";
-  const pdfBox = document.getElementById("pdfViewerContainer");
-  if (pdfBox) pdfBox.innerHTML = "";
+  document.getElementById("embedModalIframe").src = "";
   modal.hidden = true;
   document.body.style.overflow = "";
 }

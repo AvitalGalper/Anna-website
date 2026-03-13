@@ -10,7 +10,7 @@ const LIKES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3RtQxeoZl4-N
 // ── Content type → display config ──────────────────────────────
 const TYPE_CONFIG = {
   "משחק דיגיטלי": { cls: "games", cta: "▶ שחקו עכשיו", emoji: "🧩" },
-  "מערך פעילות":  { cls: "plans", cta: "פתח מערך ↗",  emoji: "📋" },
+  "מערך פעילות":  { cls: "plans", cta: "פתחו איגרת ↗", emoji: "📋", label: "איגרת לגננת" },
   "יחידת תוכן":   { cls: "units", cta: "פתח יחידה ↗", emoji: "📚" },
 };
 
@@ -261,7 +261,7 @@ function createCard(item) {
 
   const typeTag = document.createElement("span");
   typeTag.className   = `rtag rtag-${cfg.cls}`;
-  typeTag.textContent = item.type;
+  typeTag.textContent = cfg.label || item.type;
   tags.appendChild(typeTag);
 
   if (item.topic) {

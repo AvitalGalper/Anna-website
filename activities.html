@@ -128,6 +128,15 @@
         <div class="embed-modal-frame">
           <iframe id="embedModalIframe" src="" allowfullscreen></iframe>
         </div>
+        <aside class="embed-modal-comments" id="embedModalComments" aria-label="תגובות">
+          <div class="emc-header">💬 תגובות</div>
+          <div class="emc-list" id="emcList"></div>
+          <form class="emc-form" id="emcForm" novalidate>
+            <input class="emc-name" id="emcName" type="text" placeholder="השם שלך (אופציונלי)" maxlength="50" autocomplete="off" />
+            <textarea class="emc-text" id="emcText" placeholder="כתבו תגובה על המערך..." rows="3" maxlength="500" required></textarea>
+            <button class="emc-submit" type="submit">💬 שלחו תגובה</button>
+          </form>
+        </aside>
       </div>
     </div>
   </div>

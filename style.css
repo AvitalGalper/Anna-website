@@ -1964,8 +1964,9 @@ mark.search-mark {
 
 /* ── PDF modal — הדרכה לגננת (activities page) ── */
 body[data-page-type="מערך פעילות"] .embed-modal-box {
-  height: 82vh;
-  max-height: 82vh;
+  width: min(96vw, 1200px);
+  height: 88vh;
+  max-height: 88vh;
 }
 body[data-page-type="מערך פעילות"] .embed-modal-body {
   flex: 1;
@@ -1974,8 +1975,16 @@ body[data-page-type="מערך פעילות"] .embed-modal-body {
   align-items: stretch;
 }
 body[data-page-type="מערך פעילות"] .embed-modal-frame {
+  flex: 2;
+  width: auto;
   aspect-ratio: auto;
   height: 100%;
+  overflow: hidden;
+}
+/* Hide Google Docs Viewer toolbar by shifting iframe up */
+body[data-page-type="מערך פעילות"] .embed-modal-frame iframe {
+  margin-top: -40px;
+  height: calc(100% + 40px);
 }
 
 /* ── Comments panel ── */

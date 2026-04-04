@@ -20,14 +20,15 @@ const TYPE_CONFIG = {
 const TOPIC_ORDER = [
   "ראש השנה",
   "סוכות",
-  "שבת",
   "חנוכה",
-  "טו בשבט",
+  "ט\"ו בשבט",
   "פורים",
   "פסח",
-  "ל\"ג בעומר",
-  "שבועות",
   "יום העצמאות",
+  "ל\"ג בעומר",
+  "יום ירושלים",
+  "שבועות",
+  "שבת",
 ];
 
 // ── Topic → icon map ────────────────────────────────────────────
@@ -46,7 +47,7 @@ const TOPIC_ICONS = {
   "יום העצמאות":   "🇮🇱",
   "חגים":           "🎉",
   "בריאת העולם":    "🌍",
-  "חלל":            "👽",
+  "חלל":            "👩🏼‍🚀",
   // טבע וסביבה
   "עונות השנה":    "🍂",
   "בעלי חיים":     "🐾",
@@ -57,11 +58,11 @@ const TOPIC_ICONS = {
   "מזג אוויר":     "⛅",
   "מים":           "💧",
   // שפה ואוריינות
-  "שפה ואוריינות":        "🔤",
+  "שפה ואוריינות":        "📖",
   "קריאה":         "📖",
   "כתיבה":         "✏️",
   "שפה":           "💬",
-  "חיים נחמן ביאליק":   "📖",
+  "חיים נחמן ביאליק":   "🧑🏽‍💼",
   // מתמטיקה
   "חשבון":        "🔢",
   "צורות":         "🔷",
@@ -466,7 +467,17 @@ function renderCards() {
       groupMap.get(key).push(item);
     });
 
-    groupMap.forEach((groupItems, groupName) => {
+    const sortedGroups = [...groupMap.keys()].sort((a, b) => {
+      const ia = TOPIC_ORDER.indexOf(a);
+      const ib = TOPIC_ORDER.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b, "he");
+    });
+
+    sortedGroups.forEach(groupName => {
+      const groupItems = groupMap.get(groupName);
       const section = document.createElement("div");
       section.className = "cards-group";
 
